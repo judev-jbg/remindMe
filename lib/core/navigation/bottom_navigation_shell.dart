@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../constants/app_gradients.dart';
 import '../widgets/theme_dropdown.dart';
+import '../constants/app_colors.dart';
 
 /// Shell de navegación inferior con diseño moderno
-/// Integra el dropdown de temas en el AppBar
+/// Header fijo con gradiente y bottom navigation integrado
 class BottomNavigationShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -13,53 +15,244 @@ class BottomNavigationShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_getPageTitle(navigationShell.currentIndex)),
-        centerTitle: false,
-        actions: [const ThemeDropdown(), const SizedBox(width: 8)],
-      ),
-      body: navigationShell,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: NavigationBar(
-              selectedIndex: navigationShell.currentIndex,
-              onDestinationSelected: (index) => _onTap(context, index),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              indicatorColor: theme.colorScheme.primary.withOpacity(0.1),
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(Icons.home),
-                  label: 'Inicio',
+      body: Column(
+        children: [
+          // Header fijo con gradiente y esquina inferior izquierda redondeada
+          _buildFixedHeader(context),
+
+          // Contenido con esquinas redondeadas
+          Expanded(
+            child: Stack(
+              children: [
+                // Capa 1: Fondo con gradiente (sin borderRadius)
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppGradients.primary.colors.first,
+                        AppGradients.primary.colors[1],
+                      ],
+                      stops: [0.5, 0.5],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                  ),
                 ),
-                NavigationDestination(
-                  icon: Icon(Icons.event_outlined),
-                  selectedIcon: Icon(Icons.event),
-                  label: 'Eventos',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.notifications_outlined),
-                  selectedIcon: Icon(Icons.notifications),
-                  label: 'Notificaciones',
+
+                // Capa 2: Contenido con borderRadius y color del tema
+                Container(
+                  padding: const EdgeInsets.only(top: 30, bottom: 40),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.only(
+                      topRight: navigationShell.currentIndex == 0
+                          ? Radius.circular(60)
+                          : Radius.circular(0),
+                      bottomLeft:
+                          (navigationShell.currentIndex == 0 ||
+                              navigationShell.currentIndex == 1)
+                          ? Radius.circular(0)
+                          : Radius.circular(40),
+                      bottomRight:
+                          (navigationShell.currentIndex == 0 ||
+                              navigationShell.currentIndex == 1)
+                          ? Radius.circular(0)
+                          : Radius.circular(40),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // Contenido scrolleable
+                      Expanded(child: navigationShell),
+                    ],
+                  ),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+      // Bottom Navigation como overlay
+      bottomNavigationBar: _buildBottomNavigation(context),
+    );
+  }
+
+  Widget _buildFixedHeader(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: navigationShell.currentIndex == 2
+            ? Theme.of(context).scaffoldBackgroundColor
+            : null,
+        gradient: navigationShell.currentIndex == 2
+            ? null
+            : AppGradients.primary,
+        borderRadius: BorderRadius.only(
+          bottomLeft: navigationShell.currentIndex == 0
+              ? Radius.circular(60)
+              : Radius.circular(50),
+          bottomRight: navigationShell.currentIndex == 0
+              ? Radius.circular(0)
+              : Radius.circular(50),
+        ),
+      ),
+      padding: navigationShell.currentIndex == 2
+          ? EdgeInsets.fromLTRB(30, 50, 40, 0)
+          : EdgeInsets.fromLTRB(40, 50, 40, 40),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Título con ThemeDropdown
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _getPageTitle(navigationShell.currentIndex),
+                style: theme.textTheme.headlineLarge?.copyWith(
+                  color: navigationShell.currentIndex == 2
+                      ? theme.colorScheme.onSurface
+                      : AppColors.onStaticPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              ThemeDropdown(currentIndex: navigationShell.currentIndex),
+            ],
+          ),
+          // Saludo
+          if (navigationShell.currentIndex == 0) ...[
+            const SizedBox(height: 24),
+            Text(
+              '¡Hola! 👋',
+              style: theme.textTheme.headlineLarge?.copyWith(
+                color: navigationShell.currentIndex == 2
+                    ? theme.colorScheme.onSurface
+                    : AppColors.onStaticPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 8),
+          Text(
+            _getPageSubtitle(navigationShell.currentIndex),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: navigationShell.currentIndex == 2
+                  ? theme.colorScheme.onSurface.withOpacity(0.9)
+                  : AppColors.onStaticPrimary.withOpacity(0.9),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigation(BuildContext context) {
+    return Container(
+      decoration: navigationShell.currentIndex > 1
+          ? BoxDecoration(gradient: AppGradients.primary)
+          : BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(
+                    context,
+                  ).scaffoldBackgroundColor.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: Offset(0, -5),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 12,
+            right: 12,
+            top: navigationShell.currentIndex == 2 ? 30 : 0,
+            bottom: 5,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(
+                context,
+                0,
+                Icons.home_outlined,
+                Icons.home,
+                'Inicio',
+              ),
+              _buildNavItem(
+                context,
+                1,
+                Icons.event_outlined,
+                Icons.event,
+                'Eventos',
+              ),
+              _buildNavItem(
+                context,
+                2,
+                Icons.notifications_outlined,
+                Icons.notifications,
+                'Notificaciones',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(
+    BuildContext context,
+    int index,
+    IconData icon,
+    IconData selectedIcon,
+    String label,
+  ) {
+    final isSelected = navigationShell.currentIndex == index;
+    final theme = Theme.of(context);
+
+    return Expanded(
+      child: InkWell(
+        onTap: () => _onTap(context, index),
+        splashColor: Colors.white.withOpacity(0.9), // Efecto visual opcional
+        highlightColor: Colors.white.withOpacity(0.1),
+        child: Container(
+          height: 61,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isSelected ? selectedIcon : icon,
+                color: navigationShell.currentIndex == 2
+                    ? AppColors.onStaticPrimary.withOpacity(
+                        isSelected ? 1.0 : 0.6,
+                      )
+                    : theme.colorScheme.onSurface.withOpacity(
+                        isSelected ? 1.0 : 0.6,
+                      ),
+                size: 22,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                isSelected ? label : "",
+                style: TextStyle(
+                  color: navigationShell.currentIndex == 2
+                      ? AppColors.onStaticPrimary.withOpacity(
+                          isSelected ? 1.0 : 0.6,
+                        )
+                      : theme.colorScheme.onSurface.withOpacity(
+                          isSelected ? 1.0 : 0.6,
+                        ),
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -69,7 +262,6 @@ class BottomNavigationShell extends StatelessWidget {
   void _onTap(BuildContext context, int index) {
     navigationShell.goBranch(
       index,
-      // Si estamos en la misma página, hacer scroll to top
       initialLocation: index == navigationShell.currentIndex,
     );
   }
@@ -79,11 +271,24 @@ class BottomNavigationShell extends StatelessWidget {
       case 0:
         return 'RemindMe';
       case 1:
-        return 'Mis Eventos';
+        return 'Eventos';
       case 2:
         return 'Notificaciones';
       default:
         return 'RemindMe';
+    }
+  }
+
+  String _getPageSubtitle(int index) {
+    switch (index) {
+      case 0:
+        return 'Esta es la cronologia de tus eventos';
+      case 1:
+        return 'Gestiona tus eventos';
+      case 2:
+        return 'Mantente informado';
+      default:
+        return 'Esta en la cronologia de tus eventos';
     }
   }
 }

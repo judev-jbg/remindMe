@@ -1,66 +1,36 @@
 // lib/features/timeline/presentation/pages/timeline_page.dart
 
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_gradients.dart';
-import '../../../../core/widgets/curved_container.dart';
 import '../../../../core/widgets/gradient_card.dart';
 
 /// Página principal que muestra el timeline de 7 eventos
-/// Placeholder temporal hasta implementar la funcionalidad completa
+/// Diseñada para trabajar con el header fijo del BottomNavigationShell
 class TimelinePage extends StatelessWidget {
   const TimelinePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // Header con curvas
-          SliverToBoxAdapter(
-            child: CurvedContainer(
-              gradient: AppGradients.primary,
-              curveHeight: 60,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  Text(
-                    '¡Hola! 👋',
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tus próximos eventos',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
-                ],
+    return CustomScrollView(
+      slivers: [
+        // Timeline de 7 cards con padding adecuado
+        SliverPadding(
+          padding: const EdgeInsets.only(
+            left: 30,
+            right: 30,
+            top: 10,
+            bottom: 10,
+          ),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: _buildTimelineCard(context, index),
               ),
+              childCount: 7,
             ),
           ),
-
-          // Timeline de 7 cards
-          SliverPadding(
-            padding: const EdgeInsets.all(20),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: _buildTimelineCard(context, index),
-                ),
-                childCount: 7,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -86,7 +56,6 @@ class TimelinePage extends StatelessWidget {
     return GradientCard(
       gradient: LinearGradient(colors: [backgroundColor, backgroundColor]),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [

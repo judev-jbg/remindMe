@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import '../../../../core/widgets/gradient_card.dart';
-import '../../../../core/constants/app_gradients.dart';
 
 /// Página de notificaciones con filtros y sistema de marcado
 /// Placeholder temporal hasta implementar la funcionalidad completa
@@ -14,7 +13,7 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  String _selectedFilter = 'Todos';
+  String _selectedFilter = 'Todo';
 
   final List<_NotificationItem> _notifications = [
     _NotificationItem(
@@ -41,13 +40,37 @@ class _NotificationsPageState extends State<NotificationsPage> {
       time: 'hace 1 día',
       isRead: true,
     ),
+    _NotificationItem(
+      title: 'Evento eliminado',
+      subtitle: 'Se eliminó "Evento de prueba"',
+      time: 'hace 1 día',
+      isRead: true,
+    ),
+    _NotificationItem(
+      title: 'Evento eliminado',
+      subtitle: 'Se eliminó "Evento de prueba"',
+      time: 'hace 1 día',
+      isRead: true,
+    ),
+    _NotificationItem(
+      title: 'Evento eliminado',
+      subtitle: 'Se eliminó "Evento de prueba"',
+      time: 'hace 1 día',
+      isRead: true,
+    ),
+    _NotificationItem(
+      title: 'Evento eliminado',
+      subtitle: 'Se eliminó "Evento de prueba"',
+      time: 'hace 1 día',
+      isRead: true,
+    ),
   ];
 
   List<_NotificationItem> get _filteredNotifications {
     switch (_selectedFilter) {
-      case 'Marcadas':
+      case 'Visto':
         return _notifications.where((n) => n.isRead).toList();
-      case 'No marcadas':
+      case 'No Visto':
         return _notifications.where((n) => !n.isRead).toList();
       default:
         return _notifications;
@@ -72,7 +95,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Widget _buildFilterChips() {
     final theme = Theme.of(context);
-    final filters = ['Todos', 'Marcadas', 'No marcadas'];
+    final filters = ['Todo', 'Visto', 'No Visto'];
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -88,17 +111,32 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         padding: const EdgeInsets.only(right: 8),
                         child: FilterChip(
                           label: Text(filter),
+                          labelPadding: EdgeInsets.fromLTRB(4, 1, 4, 1),
                           selected: _selectedFilter == filter,
                           onSelected: (selected) {
                             setState(() {
                               _selectedFilter = filter;
                             });
                           },
-                          backgroundColor: theme.colorScheme.surface,
+                          side: _selectedFilter == filter
+                              ? null
+                              : BorderSide(color: Colors.transparent),
+                          backgroundColor: theme.colorScheme.surfaceContainer,
                           selectedColor: theme.colorScheme.primary.withOpacity(
                             0.2,
                           ),
                           checkmarkColor: theme.colorScheme.primary,
+                          labelStyle: TextStyle(
+                            color: _selectedFilter == filter
+                                ? theme.colorScheme.onBackground
+                                : theme.colorScheme.onSurface,
+                            fontSize: 12,
+                          ),
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(
+                          //     18,
+                          //   ), // Aumenta este valor para más redondeo
+                          // ),
                         ),
                       ),
                     )
@@ -110,7 +148,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
           TextButton.icon(
             onPressed: _markAllAsRead,
             icon: const Icon(Icons.done_all, size: 18),
-            label: const Text('Marcar todos'),
+            label: Text(
+              'Marcar',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),
@@ -145,14 +186,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Widget _buildNotificationsList() {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
       itemCount: _filteredNotifications.length,
       itemBuilder: (context, index) {
         final notification = _filteredNotifications[index];
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: 1),
           child: GradientCard(
+            borderRadius: 0,
             gradient: LinearGradient(
               colors: notification.isRead
                   ? [
@@ -171,17 +213,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
             onTap: () => _markAsRead(index),
             child: Row(
               children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: notification.isRead
-                        ? Theme.of(context).colorScheme.outline
-                        : Theme.of(context).colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

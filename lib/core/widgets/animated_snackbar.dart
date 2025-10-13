@@ -7,7 +7,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 /// Soporta diferentes tipos de mensajes con iconos y colores apropiados
 class AnimatedSnackbar {
   static const Duration _defaultDuration = Duration(seconds: 3);
-  static const Duration _animationDuration = Duration(milliseconds: 300);
 
   /// Muestra un snackbar de éxito
   static void showSuccess({
@@ -105,7 +104,7 @@ class AnimatedSnackbar {
       elevation: 0,
       behavior: SnackBarBehavior.floating,
       duration: duration,
-      margin: const EdgeInsets.all(16),
+      // margin: const EdgeInsets.all(16),
       padding: EdgeInsets.zero,
       action: onAction != null && actionLabel != null
           ? SnackBarAction(
@@ -169,11 +168,11 @@ class _SnackbarContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: colorScheme.backgroundColor,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
-                blurRadius: 8,
+                blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
             ],

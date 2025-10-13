@@ -11,16 +11,17 @@ class AppColors {
   static const Color primaryVariant = Color(0xFF764BA2);
   static const Color secondary = Color(0xFF42A5F5);
   static const Color secondaryVariant = Color(0xFF1E88E5);
+  static const Color onStaticPrimary = Color(0xFFF8F8F8);
 
   // Colores de superficie - Light theme
-  static const Color backgroundLight = Color(0xFFFAFAFA);
-  static const Color surfaceLight = Color(0xFFFFFFFF);
-  static const Color surfaceVariantLight = Color(0xFFF5F5F5);
+  static const Color backgroundLight = Color(0xFFFFFFFF);
+  static const Color surfaceLight = Color(0xFFFAFAFA);
+  static const Color surfaceVariantLight = Color(0xFFF0F0F0);
 
   // Colores de superficie - Dark theme
   static const Color backgroundDark = Color(0xFF121212);
-  static const Color surfaceDark = Color(0xFF1E1E1E);
-  static const Color surfaceVariantDark = Color(0xFF2A2A2A);
+  static const Color surfaceDark = Color(0xFF313131);
+  static const Color surfaceVariantDark = Color(0xFF414141);
 
   // Colores de texto
   static const Color textPrimaryLight = Color(0xFF212121);
@@ -35,12 +36,12 @@ class AppColors {
   static const Color pastSubtleDark = Color(0xFF2D2D2D);
 
   // Colores de estado
-  static const Color success = Color(0xFF4CAF50);
+  static const Color success = Color(0xFF66CA6A);
   static const Color warning = Color(0xFFFF9800);
-  static const Color error = Color(0xFFF44336);
+  static const Color error = Color(0xFFFA584C);
   static const Color info = Color(0xFF2196F3);
 
   // Colores para notificaciones
-  static const Color unreadLight = Color(0xFFFFF3E0);
-  static const Color unreadDark = Color(0xFF2E1500);
+  static const Color unreadLight = Color(0xFFDDCDEC);
+  static const Color unreadDark = Color(0xFFBDC7F5);
 }

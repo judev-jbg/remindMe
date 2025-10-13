@@ -3,18 +3,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/settings/presentation/cubit/theme_cubit.dart';
+import '../constants/app_colors.dart';
 
 /// Dropdown para selección de tema con diseño moderno
 /// Permite cambiar entre automático, claro y oscuro
 class ThemeDropdown extends StatelessWidget {
-  const ThemeDropdown({super.key});
+  const ThemeDropdown({super.key, required this.currentIndex});
+
+  final int currentIndex;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
         return PopupMenuButton<ThemeMode>(
-          icon: const Icon(Icons.palette_outlined),
+          icon: Icon(
+            Icons.palette_outlined,
+            color: currentIndex == 2
+                ? theme.colorScheme.onSurface
+                : AppColors.onStaticPrimary,
+          ),
           tooltip: 'Cambiar tema',
           onSelected: (ThemeMode mode) {
             context.read<ThemeCubit>().changeTheme(mode);

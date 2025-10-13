@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../constants/app_colors.dart';
-import '../constants/app_gradients.dart';
 
 /// Sistema de temas de la aplicación con soporte completo para modo claro y oscuro
 class AppTheme {
@@ -84,6 +83,8 @@ class AppTheme {
         onSecondary: Colors.white,
         surface: AppColors.surfaceLight,
         onSurface: AppColors.textPrimaryLight,
+        surfaceContainer: AppColors.surfaceVariantLight,
+        onSurfaceVariant: AppColors.textSecondaryLight,
         background: AppColors.backgroundLight,
         onBackground: AppColors.textPrimaryLight,
         error: AppColors.error,
@@ -169,6 +170,8 @@ class AppTheme {
         onSecondary: Colors.white,
         surface: AppColors.surfaceDark,
         onSurface: AppColors.textPrimaryDark,
+        surfaceContainer: AppColors.surfaceVariantDark,
+        onSurfaceVariant: AppColors.textSecondaryDark,
         background: AppColors.backgroundDark,
         onBackground: AppColors.textPrimaryDark,
         error: AppColors.error,

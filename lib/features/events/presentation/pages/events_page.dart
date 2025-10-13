@@ -30,6 +30,7 @@ class _EventsPageState extends State<EventsPage> {
       body: _events.isEmpty ? _buildEmptyState() : _buildEventsList(),
       floatingActionButton: FloatingActionButton(
         onPressed: _showCreateEventModal,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add),
       ),
     );
@@ -83,19 +84,17 @@ class _EventsPageState extends State<EventsPage> {
             background: _buildDismissBackground(
               color: Colors.red,
               icon: Icons.delete,
-              text: 'Eliminar',
               alignment: Alignment.centerLeft,
             ),
             secondaryBackground: _buildDismissBackground(
-              color: Colors.blue,
+              color: Colors.orange,
               icon: Icons.edit,
-              text: 'Editar',
               alignment: Alignment.centerRight,
             ),
             child: GradientCard(
               gradient: AppGradients.getEventCardGradient(index),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
                     _events[index],
@@ -123,7 +122,6 @@ class _EventsPageState extends State<EventsPage> {
   Widget _buildDismissBackground({
     required Color color,
     required IconData icon,
-    required String text,
     required Alignment alignment,
   }) {
     return Container(
@@ -133,20 +131,7 @@ class _EventsPageState extends State<EventsPage> {
         color: color,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: Colors.white, size: 32),
-          const SizedBox(height: 4),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
+      child: Icon(icon, color: Colors.white, size: 32),
     );
   }
 

@@ -1,107 +1,85 @@
-// lib/core/widgets/curved_container.dart
+// lib/core/widgets/advanced_curved_transition.dart
 
 import 'package:flutter/material.dart';
 
-/// Container con diseño de curvas fluidas inspirado en la imagen 3
-/// Soporta gradientes personalizados y altura de curva ajustable
-class CurvedContainer extends StatelessWidget {
+class AdvancedCurvedTransition extends StatelessWidget {
   final Widget child;
-  final Gradient gradient;
+  final Color topColor;
+  final Color bottomColor;
   final double curveHeight;
-  final EdgeInsetsGeometry? padding;
-  final bool isInverted;
 
-  const CurvedContainer({
-    super.key,
+  const AdvancedCurvedTransition({
+    Key? key,
     required this.child,
-    required this.gradient,
-    this.curveHeight = 80,
-    this.padding,
-    this.isInverted = false,
-  });
+    required this.topColor,
+    required this.bottomColor,
+    this.curveHeight = 60,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: CurvePainter(
-        gradient: gradient,
-        curveHeight: curveHeight,
-        isInverted: isInverted,
-      ),
-      child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
+    return Stack(
+      children: [
+        child,
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: CustomPaint(
+            size: Size(MediaQuery.of(context).size.width, curveHeight),
+            painter: AdvancedCurvedPainter(
+              topColor: topColor,
+              bottomColor: bottomColor,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
 
-/// Painter personalizado para crear las curvas fluidas
-class CurvePainter extends CustomPainter {
-  final Gradient gradient;
-  final double curveHeight;
-  final bool isInverted;
+class AdvancedCurvedPainter extends CustomPainter {
+  final Color topColor;
+  final Color bottomColor;
 
-  CurvePainter({
-    required this.gradient,
-    required this.curveHeight,
-    required this.isInverted,
-  });
+  AdvancedCurvedPainter({required this.topColor, required this.bottomColor});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..shader = gradient.createShader(
-        Rect.fromLTWH(0, 0, size.width, size.height),
-      );
+    // Primera curva (más suave)
+    final paint1 = Paint()
+      ..color = topColor
+      ..style = PaintingStyle.fill;
 
-    final path = Path();
+    final path1 = Path();
+    path1.moveTo(0, size.height * 0.4);
+    path1.quadraticBezierTo(size.width * 0.5, 0, size.width, size.height * 0.4);
+    path1.lineTo(size.width, size.height);
+    path1.lineTo(0, size.height);
+    path1.close();
 
-    if (isInverted) {
-      // Curva invertida (cóncava)
-      path
-        ..moveTo(0, 0)
-        ..lineTo(size.width, 0)
-        ..lineTo(size.width, size.height - curveHeight)
-        ..quadraticBezierTo(
-          size.width * 0.75,
-          size.height - curveHeight * 1.2,
-          size.width * 0.5,
-          size.height - curveHeight * 0.6,
-        )
-        ..quadraticBezierTo(
-          size.width * 0.25,
-          size.height,
-          0,
-          size.height - curveHeight,
-        )
-        ..close();
-    } else {
-      // Curva normal (convexa)
-      path
-        ..moveTo(0, curveHeight)
-        ..quadraticBezierTo(
-          size.width * 0.25,
-          0,
-          size.width * 0.5,
-          curveHeight * 0.6,
-        )
-        ..quadraticBezierTo(
-          size.width * 0.75,
-          curveHeight * 1.2,
-          size.width,
-          curveHeight * 0.8,
-        )
-        ..lineTo(size.width, size.height)
-        ..lineTo(0, size.height)
-        ..close();
-    }
+    canvas.drawPath(path1, paint1);
 
-    canvas.drawPath(path, paint);
+    // Segunda curva (más pronunciada)
+    final paint2 = Paint()
+      ..color = bottomColor
+      ..style = PaintingStyle.fill;
+
+    final path2 = Path();
+    path2.moveTo(0, size.height * 0.7);
+    path2.quadraticBezierTo(
+      size.width * 0.5,
+      size.height * 0.2,
+      size.width,
+      size.height * 0.7,
+    );
+    path2.lineTo(size.width, size.height);
+    path2.lineTo(0, size.height);
+    path2.close();
+
+    canvas.drawPath(path2, paint2);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return oldDelegate is CurvePainter &&
-        (oldDelegate.gradient != gradient ||
-            oldDelegate.curveHeight != curveHeight ||
-            oldDelegate.isInverted != isInverted);
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

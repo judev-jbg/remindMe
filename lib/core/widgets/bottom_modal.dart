@@ -1,7 +1,4 @@
-// lib/core/widgets/bottom_modal.dart
-
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 /// Modal inferior reutilizable con diseño moderno y animaciones fluidas
 /// Soporta drag to dismiss y ocupa el porcentaje especificado de la pantalla
