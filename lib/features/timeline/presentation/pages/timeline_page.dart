@@ -1,6 +1,7 @@
 // lib/features/timeline/presentation/pages/timeline_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:remindme/core/constants/app_colors.dart';
 import '../../../../core/widgets/gradient_card.dart';
 
 /// Página principal que muestra el timeline de 7 eventos
@@ -42,20 +43,25 @@ class TimelinePage extends StatelessWidget {
     // Colores especiales para diferentes tipos de cards
     Color backgroundColor;
     if (isToday) {
-      backgroundColor = theme.brightness == Brightness.light
-          ? const Color(0xFFE8F4FD)
-          : const Color(0xFF1A365D);
+      backgroundColor = theme.colorScheme.tertiaryContainer;
     } else if (isPast) {
-      backgroundColor = theme.brightness == Brightness.light
-          ? const Color(0xFFF8F9FA)
-          : const Color(0xFF2D2D2D);
+      backgroundColor = theme.colorScheme.surfaceContainerLow;
     } else {
-      backgroundColor = theme.colorScheme.surface;
+      backgroundColor =
+          theme.cardTheme.color ?? theme.colorScheme.surfaceContainer;
     }
 
     return GradientCard(
       gradient: LinearGradient(colors: [backgroundColor, backgroundColor]),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 2,
+          offset: const Offset(0, 2),
+        ),
+      ],
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -65,6 +71,8 @@ class TimelinePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isToday
                       ? theme.colorScheme.primary
+                      : isPast
+                      ? theme.colorScheme.outline.withOpacity(0.3)
                       : theme.colorScheme.outline,
                   shape: BoxShape.circle,
                 ),
@@ -76,6 +84,8 @@ class TimelinePage extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: isToday
                       ? theme.colorScheme.primary
+                      : isPast
+                      ? theme.colorScheme.onSurface.withOpacity(0.3)
                       : theme.colorScheme.onSurface,
                 ),
               ),
@@ -101,10 +111,15 @@ class TimelinePage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            _getCardDate(index),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              _getCardDate(index),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: isPast
+                    ? theme.colorScheme.onSurface.withOpacity(0.3)
+                    : theme.colorScheme.onSurface.withOpacity(0.7),
+              ),
             ),
           ),
         ],

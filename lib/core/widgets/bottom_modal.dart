@@ -85,7 +85,11 @@ class _BottomModalState extends State<BottomModal>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final height = mediaQuery.size.height * widget.heightPercentage;
+    final keyboardHeight = mediaQuery.viewInsets.bottom;
+    final screenHeight = mediaQuery.size.height;
+
+    // Altura máxima del modal (sin contar el teclado)
+    final maxHeight = screenHeight * widget.heightPercentage;
 
     return GestureDetector(
       onTap: widget.isDismissible ? _handleDismiss : null,
@@ -96,12 +100,12 @@ class _BottomModalState extends State<BottomModal>
           child: AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, height * (1 - _animation.value)),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
+              return Align(
+                alignment: Alignment.bottomCenter,
+                child: Transform.translate(
+                  offset: Offset(0, maxHeight * (1 - _animation.value)),
                   child: Container(
-                    height: height,
+                    constraints: BoxConstraints(maxHeight: maxHeight),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color:
@@ -118,6 +122,8 @@ class _BottomModalState extends State<BottomModal>
                         ),
                       ],
                     ),
+                    // Agregar padding bottom para el teclado
+                    padding: EdgeInsets.only(bottom: keyboardHeight),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -138,8 +144,10 @@ class _BottomModalState extends State<BottomModal>
                         ] else
                           const SizedBox(height: 24),
 
-                        // Content
-                        Expanded(child: widget.child),
+                        // Content - ahora flexible en lugar de expandido
+                        Flexible(
+                          child: SingleChildScrollView(child: widget.child),
+                        ),
                       ],
                     ),
                   ),

@@ -21,17 +21,30 @@ class _EventsPageState extends State<EventsPage> {
     'Aniversario de boda',
     'Reunión de trabajo',
     'Cita médica',
-    'Evento de prueba',
+    'Evento deportivo',
+    'Conferencia tecnológica',
+    'Compras',
+    'Mesario',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _events.isEmpty ? _buildEmptyState() : _buildEventsList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateEventModal,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(Icons.add),
+      bottomNavigationBar: Container(
+        height: 80,
+        padding: const EdgeInsets.only(right: 16),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: FloatingActionButton(
+            onPressed: _showCreateEventModal,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(Icons.add),
+          ),
+        ),
       ),
     );
   }
@@ -175,6 +188,7 @@ class _EventsPageState extends State<EventsPage> {
   void _showEditModal(int index) {
     BottomModal.show(
       context: context,
+      heightPercentage: 0.4,
       child: _buildEventModal(
         title: 'Editar Evento',
         initialValue: _events[index],
@@ -194,6 +208,7 @@ class _EventsPageState extends State<EventsPage> {
   void _showCreateEventModal() {
     BottomModal.show(
       context: context,
+      heightPercentage: 0.4,
       child: _buildEventModal(
         title: 'Crear Evento',
         onSave: (value) {

@@ -83,10 +83,13 @@ class AppTheme {
         onSecondary: Colors.white,
         surface: AppColors.surfaceLight,
         onSurface: AppColors.textPrimaryLight,
-        surfaceContainer: AppColors.surfaceVariantLight,
+        surfaceContainer: AppColors.surfaceContainerLight,
+        surfaceContainerLow: AppColors.surfaceContainerLowLight,
         onSurfaceVariant: AppColors.textSecondaryLight,
         background: AppColors.backgroundLight,
         onBackground: AppColors.textPrimaryLight,
+        tertiary: AppColors.unreadLight,
+        tertiaryContainer: AppColors.todayEmphasisLight,
         error: AppColors.error,
         onError: Colors.white,
       ),
@@ -123,7 +126,7 @@ class AppTheme {
 
       // Card Theme
       cardTheme: const CardThemeData(
-        color: AppColors.surfaceLight,
+        color: AppColors.surfaceContainerLight,
         shadowColor: Colors.black12,
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -171,9 +174,12 @@ class AppTheme {
         surface: AppColors.surfaceDark,
         onSurface: AppColors.textPrimaryDark,
         surfaceContainer: AppColors.surfaceVariantDark,
+        surfaceContainerLow: AppColors.surfaceContainerLowDark,
         onSurfaceVariant: AppColors.textSecondaryDark,
         background: AppColors.backgroundDark,
         onBackground: AppColors.textPrimaryDark,
+        tertiary: AppColors.unreadDark,
+        tertiaryContainer: AppColors.todayEmphasisDark,
         error: AppColors.error,
         onError: Colors.white,
       ),
@@ -210,7 +216,7 @@ class AppTheme {
 
       // Card Theme
       cardTheme: const CardThemeData(
-        color: AppColors.surfaceDark,
+        color: AppColors.surfaceContainerDark,
         shadowColor: Colors.black26,
         elevation: 4,
         shape: RoundedRectangleBorder(

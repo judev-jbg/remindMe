@@ -132,11 +132,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 : theme.colorScheme.onSurface,
                             fontSize: 12,
                           ),
-                          // shape: RoundedRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(
-                          //     18,
-                          //   ), // Aumenta este valor para más redondeo
-                          // ),
                         ),
                       ),
                     )
@@ -186,7 +181,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Widget _buildNotificationsList() {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       itemCount: _filteredNotifications.length,
       itemBuilder: (context, index) {
         final notification = _filteredNotifications[index];
@@ -202,12 +197,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       Theme.of(context).colorScheme.surface,
                     ]
                   : [
-                      Theme.of(context).brightness == Brightness.light
-                          ? const Color(0xFFFFF3E0)
-                          : const Color(0xFF2E1500),
-                      Theme.of(context).brightness == Brightness.light
-                          ? const Color(0xFFFFF3E0)
-                          : const Color(0xFF2E1500),
+                      Theme.of(context).colorScheme.tertiary,
+                      Theme.of(context).colorScheme.tertiary,
                     ],
             ),
             onTap: () => _markAsRead(index),
@@ -217,13 +208,31 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        notification.title,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: notification.isRead
-                              ? FontWeight.normal
-                              : FontWeight.w600,
-                        ),
+                      Row(
+                        children: [
+                          if (!notification.isRead) ...[
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: notification.isRead
+                                    ? Colors.transparent
+                                    : Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                          ],
+                          Text(
+                            notification.title,
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(
+                                  fontWeight: notification.isRead
+                                      ? FontWeight.normal
+                                      : FontWeight.w600,
+                                ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(

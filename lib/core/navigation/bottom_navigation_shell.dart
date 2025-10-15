@@ -42,7 +42,10 @@ class BottomNavigationShell extends StatelessWidget {
 
                 // Capa 2: Contenido con borderRadius y color del tema
                 Container(
-                  padding: const EdgeInsets.only(top: 30, bottom: 40),
+                  padding: EdgeInsets.only(
+                    top: navigationShell.currentIndex == 2 ? 10 : 40,
+                    bottom: navigationShell.currentIndex == 2 ? 40 : 0,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.only(
@@ -133,16 +136,17 @@ class BottomNavigationShell extends StatelessWidget {
               ),
             ),
           ],
-
-          const SizedBox(height: 8),
-          Text(
-            _getPageSubtitle(navigationShell.currentIndex),
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: navigationShell.currentIndex == 2
-                  ? theme.colorScheme.onSurface.withOpacity(0.9)
-                  : AppColors.onStaticPrimary.withOpacity(0.9),
+          if (navigationShell.currentIndex < 2) ...[
+            const SizedBox(height: 8),
+            Text(
+              _getPageSubtitle(navigationShell.currentIndex),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: navigationShell.currentIndex == 2
+                    ? theme.colorScheme.onSurface.withOpacity(0.9)
+                    : AppColors.onStaticPrimary.withOpacity(0.9),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -152,53 +156,39 @@ class BottomNavigationShell extends StatelessWidget {
     return Container(
       decoration: navigationShell.currentIndex > 1
           ? BoxDecoration(gradient: AppGradients.primary)
-          : BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(
-                    context,
-                  ).scaffoldBackgroundColor.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: Offset(0, -5),
-                  spreadRadius: 0,
-                ),
-              ],
+          : BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 12,
+          right: 12,
+          top: navigationShell.currentIndex == 1 ? 15 : 30,
+          bottom: 5,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(
+              context,
+              0,
+              Icons.home_outlined,
+              Icons.home,
+              'Inicio',
             ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 12,
-            right: 12,
-            top: navigationShell.currentIndex == 2 ? 30 : 0,
-            bottom: 5,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(
-                context,
-                0,
-                Icons.home_outlined,
-                Icons.home,
-                'Inicio',
-              ),
-              _buildNavItem(
-                context,
-                1,
-                Icons.event_outlined,
-                Icons.event,
-                'Eventos',
-              ),
-              _buildNavItem(
-                context,
-                2,
-                Icons.notifications_outlined,
-                Icons.notifications,
-                'Notificaciones',
-              ),
-            ],
-          ),
+            _buildNavItem(
+              context,
+              1,
+              Icons.event_outlined,
+              Icons.event,
+              'Eventos',
+            ),
+            _buildNavItem(
+              context,
+              2,
+              Icons.notifications_outlined,
+              Icons.notifications,
+              'Notificaciones',
+            ),
+          ],
         ),
       ),
     );
@@ -220,9 +210,8 @@ class BottomNavigationShell extends StatelessWidget {
         splashColor: Colors.white.withOpacity(0.9), // Efecto visual opcional
         highlightColor: Colors.white.withOpacity(0.1),
         child: Container(
-          height: 61,
+          height: 60,
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
