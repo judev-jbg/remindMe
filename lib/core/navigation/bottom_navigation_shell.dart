@@ -2,9 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/app_gradients.dart';
 import '../widgets/theme_dropdown.dart';
 import '../constants/app_colors.dart';
+import '../../features/timeline/presentation/cubit/timeline_cubit.dart';
+import '../../features/events/presentation/cubit/eventos_cubit.dart';
+import '../../features/notifications/presentation/cubit/notificaciones_cubit.dart';
 
 /// Shell de navegación inferior con diseño moderno
 /// Header fijo con gradiente y bottom navigation integrado
@@ -253,6 +257,16 @@ class BottomNavigationShell extends StatelessWidget {
       index,
       initialLocation: index == navigationShell.currentIndex,
     );
+    if (index == 0) {
+      // Timeline - Recargar para mostrar eventos nuevos
+      context.read<TimelineCubit>().cargarTimeline();
+    } else if (index == 1) {
+      // Eventos
+      context.read<EventosCubit>().cargarEventos();
+    } else if (index == 2) {
+      // Notificaciones
+      context.read<NotificacionesCubit>().cargarNotificaciones();
+    }
   }
 
   String _getPageTitle(int index) {

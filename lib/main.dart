@@ -3,10 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'core/navigation/app_router.dart';
 import 'features/settings/presentation/cubit/theme_cubit.dart';
+import 'features/events/presentation/cubit/eventos_cubit.dart';
+import 'features/notifications/presentation/cubit/notificaciones_cubit.dart';
+import 'features/timeline/presentation/cubit/timeline_cubit.dart';
 import 'injection_container.dart';
 
 void main() async {
@@ -14,6 +18,9 @@ void main() async {
 
   // Configurar orientación de pantalla
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  // Inicializar formatos de fecha en español
+  await initializeDateFormatting('es_ES', null);
 
   // Configurar inyección de dependencias
   await configureDependencies();
@@ -27,8 +34,27 @@ class RemindMeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<ThemeCubit>()..loadTheme(),
+    return MultiBlocProvider(
+      providers: [
+        // Theme Cubit
+        BlocProvider(create: (context) => getIt<ThemeCubit>()..loadTheme()),
+
+        // Events Cubit
+        BlocProvider(
+          create: (context) => getIt<EventosCubit>()..cargarEventos(),
+        ),
+
+        // Notifications Cubit
+        BlocProvider(
+          create: (context) =>
+              getIt<NotificacionesCubit>()..cargarNotificaciones(),
+        ),
+
+        // Timeline Cubit
+        BlocProvider(
+          create: (context) => getIt<TimelineCubit>()..cargarTimeline(),
+        ),
+      ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp.router(
@@ -39,6 +65,15 @@ class RemindMeApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: state.themeMode,
+
+            // Localización en español
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('es', 'ES')],
+            locale: const Locale('es', 'ES'),
 
             // Configuración de rutas
             routerConfig: AppRouter.router,
