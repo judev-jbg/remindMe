@@ -52,11 +52,12 @@ class NotificationService {
     print('Notification tapped: ${response.payload}');
   }
 
-  /// Solicita permisos de notificación (especialmente para iOS)
+  /// Solicita permisos de notificación
   Future<bool> requestPermissions() async {
     if (!_initialized) await initialize();
 
-    final result = await _notifications
+    // Solicitar permisos para iOS
+    final iosResult = await _notifications
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
@@ -65,7 +66,17 @@ class NotificationService {
           sound: true,
         );
 
-    return result ?? true; // En Android siempre retorna true
+    // Solicitar permisos para Android 13+
+    final androidResult = await _notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
+    print('🔔 Permisos de notificación:');
+    print('   iOS: ${iosResult ?? "N/A"}');
+    print('   Android: ${androidResult ?? "N/A"}');
+
+    return (iosResult ?? androidResult) ?? true;
   }
 
   /// Programa una notificación para una fecha y hora específica
@@ -211,6 +222,11 @@ class NotificationService {
   }) async {
     if (!_initialized) await initialize();
 
+    print('📢 Mostrando notificación inmediata:');
+    print('   ID: $id');
+    print('   Título: $title');
+    print('   Cuerpo: $body');
+
     const androidDetails = AndroidNotificationDetails(
       'remindme_channel',
       'Recordatorios',
@@ -218,6 +234,8 @@ class NotificationService {
       importance: Importance.max,
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
+      playSound: true,
+      enableVibration: true,
     );
 
     const iosDetails = DarwinNotificationDetails(
@@ -231,12 +249,17 @@ class NotificationService {
       iOS: iosDetails,
     );
 
-    await _notifications.show(
-      id,
-      title,
-      body,
-      notificationDetails,
-      payload: payload,
-    );
+    try {
+      await _notifications.show(
+        id,
+        title,
+        body,
+        notificationDetails,
+        payload: payload,
+      );
+      print('✅ Notificación inmediata mostrada');
+    } catch (e) {
+      print('❌ Error mostrando notificación inmediata: $e');
+    }
   }
 }
