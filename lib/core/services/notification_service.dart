@@ -78,9 +78,17 @@ class NotificationService {
   }) async {
     if (!_initialized) await initialize();
 
+    final ahora = DateTime.now();
+    print('⏰ Programando notificación:');
+    print('   ID: $id');
+    print('   Título: $title');
+    print('   Fecha programada: $scheduledDate');
+    print('   Fecha actual: $ahora');
+    print('   Diferencia: ${scheduledDate.difference(ahora).inMinutes} minutos');
+
     // Verificar que la fecha sea futura
-    if (scheduledDate.isBefore(DateTime.now())) {
-      print('Cannot schedule notification in the past: $scheduledDate');
+    if (scheduledDate.isBefore(ahora)) {
+      print('❌ Cannot schedule notification in the past: $scheduledDate');
       return;
     }
 
@@ -106,19 +114,27 @@ class NotificationService {
     );
 
     try {
+      final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
+      print('   TZ Scheduled Date: $tzScheduledDate');
+
       await _notifications.zonedSchedule(
         id,
         title,
         body,
-        tz.TZDateTime.from(scheduledDate, tz.local),
+        tzScheduledDate,
         notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: payload,
       );
 
-      print('Notification scheduled: $title at $scheduledDate');
+      print('✅ Notification scheduled: $title at $scheduledDate');
+
+      // Verificar notificaciones pendientes
+      final pending = await _notifications.pendingNotificationRequests();
+      print('📋 Total notificaciones pendientes: ${pending.length}');
     } catch (e) {
-      print('Error scheduling notification: $e');
+      print('❌ Error scheduling notification: $e');
+      print('   Stack trace: ${StackTrace.current}');
     }
   }
 

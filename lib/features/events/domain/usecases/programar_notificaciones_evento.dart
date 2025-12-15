@@ -46,7 +46,19 @@ class ProgramarNotificacionesEvento {
     final List<DateTime> fechas = [];
     final ahora = DateTime.now();
 
-    // Calcular las próximas 50 ocurrencias (o hasta la fecha de finalización)
+    // Para eventos sin recurrencia (tipo "Otro"), usar la fecha inicial directamente
+    if (evento.tipoRecurrencia == TipoRecurrencia.ninguna) {
+      if (evento.fechaHoraInicialRecordatorio != null &&
+          evento.fechaHoraInicialRecordatorio!.isAfter(ahora)) {
+        fechas.add(evento.fechaHoraInicialRecordatorio!);
+        print('📅 Notificación única programada para: ${evento.fechaHoraInicialRecordatorio}');
+      } else {
+        print('⚠️ Fecha de recordatorio no es futura: ${evento.fechaHoraInicialRecordatorio}');
+      }
+      return fechas;
+    }
+
+    // Para eventos recurrentes, calcular múltiples ocurrencias
     DateTime? proximaFecha =
         RecordatorioCalculator.calcularProximoRecordatorio(evento, 0);
 
