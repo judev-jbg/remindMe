@@ -33,6 +33,7 @@ class _EventoFormState extends State<EventoForm> {
   late bool _tieneRecordatorio;
   late EstadoEvento _estadoSeleccionado;
   TimeOfDay? _horaEvento;
+  TiempoAvisoAntes? _tiempoAvisoAntes;
 
   @override
   void initState() {
@@ -54,11 +55,14 @@ class _EventoFormState extends State<EventoForm> {
       if (evento.horaEvento != null) {
         _horaEvento = TimeOfDay.fromDateTime(evento.horaEvento!);
       }
+
+      _tiempoAvisoAntes = evento.tiempoAvisoAntes;
     } else {
       _fechaSeleccionada = DateTime.now();
       _tipoSeleccionado = TipoEvento.otro;
       _tieneRecordatorio = false;
       _estadoSeleccionado = EstadoEvento.habilitado;
+      _tiempoAvisoAntes = null;
     }
   }
 
@@ -215,6 +219,10 @@ class _EventoFormState extends State<EventoForm> {
                 onChanged: (value) {
                   setState(() {
                     _tieneRecordatorio = value;
+                    // Si se desactiva el recordatorio, limpiar tiempo de aviso
+                    if (!value) {
+                      _tiempoAvisoAntes = null;
+                    }
                   });
                 },
                 secondary: Icon(
@@ -223,6 +231,39 @@ class _EventoFormState extends State<EventoForm> {
                       : Icons.notifications_off,
                 ),
               ),
+
+              // Tiempo de aviso (solo para tipo "Otro" con recordatorio activo)
+              if (_tipoSeleccionado == TipoEvento.otro && _tieneRecordatorio) ...[
+                const SizedBox(height: 16),
+                DropdownButtonFormField<TiempoAvisoAntes>(
+                  value: _tiempoAvisoAntes,
+                  decoration: const InputDecoration(
+                    labelText: 'Tiempo de aviso *',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.alarm),
+                    helperText: 'Cuándo deseas recibir la notificación',
+                  ),
+                  items: TiempoAvisoAntes.values.map((tiempo) {
+                    return DropdownMenuItem(
+                      value: tiempo,
+                      child: Text(tiempo.displayName),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _tiempoAvisoAntes = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (_tipoSeleccionado == TipoEvento.otro &&
+                        _tieneRecordatorio &&
+                        value == null) {
+                      return 'Debes seleccionar el tiempo de aviso';
+                    }
+                    return null;
+                  },
+                ),
+              ],
 
               // Estado (solo en modo edición y si tiene recordatorio)
               if (widget.modo == EventoFormMode.editar &&
@@ -337,6 +378,19 @@ class _EventoFormState extends State<EventoForm> {
       );
     }
 
+    // Validar tiempo de aviso para tipo "Otro" con recordatorio
+    if (_tipoSeleccionado == TipoEvento.otro &&
+        _tieneRecordatorio &&
+        _tiempoAvisoAntes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Debes seleccionar el tiempo de aviso'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     // Preparar datos
     final data = <String, dynamic>{
       'nombre': _nombreController.text.trim(),
@@ -348,6 +402,7 @@ class _EventoFormState extends State<EventoForm> {
       'horaEvento': horaEvento,
       'tieneRecordatorio': _tieneRecordatorio,
       'estado': _estadoSeleccionado,
+      'tiempoAvisoAntes': _tiempoAvisoAntes,
     };
 
     // Si es edición, pasar campos adicionales

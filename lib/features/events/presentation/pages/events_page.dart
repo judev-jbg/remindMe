@@ -415,6 +415,7 @@ class _EventsPageState extends State<EventsPage> {
             notas: data['notas'],
             horaEvento: data['horaEvento'],
             tieneRecordatorio: data['tieneRecordatorio'],
+            tiempoAvisoAntes: data['tiempoAvisoAntes'],
           );
 
           if (context.mounted) {

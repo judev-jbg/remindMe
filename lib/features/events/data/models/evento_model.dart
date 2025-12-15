@@ -14,6 +14,7 @@ class EventoModel extends Evento {
     super.horaEvento,
     required super.tieneRecordatorio,
     required super.estado,
+    super.tiempoAvisoAntes,
     super.fechaHoraInicialRecordatorio,
     super.tipoRecurrencia,
     super.intervalo,
@@ -35,6 +36,7 @@ class EventoModel extends Evento {
       horaEvento: evento.horaEvento,
       tieneRecordatorio: evento.tieneRecordatorio,
       estado: evento.estado,
+      tiempoAvisoAntes: evento.tiempoAvisoAntes,
       fechaHoraInicialRecordatorio: evento.fechaHoraInicialRecordatorio,
       tipoRecurrencia: evento.tipoRecurrencia,
       intervalo: evento.intervalo,
@@ -59,6 +61,9 @@ class EventoModel extends Evento {
           : null,
       tieneRecordatorio: (map['tiene_recordatorio'] as int) == 1,
       estado: _estadoEventoFromString(map['estado'] as String),
+      tiempoAvisoAntes: map['tiempo_aviso_antes'] != null
+          ? _tiempoAvisoAntesFromString(map['tiempo_aviso_antes'] as String)
+          : null,
       fechaHoraInicialRecordatorio:
           map['fecha_hora_inicial_recordatorio'] != null
           ? DateTime.fromMillisecondsSinceEpoch(
@@ -98,6 +103,9 @@ class EventoModel extends Evento {
       'hora_evento': horaEvento?.millisecondsSinceEpoch,
       'tiene_recordatorio': tieneRecordatorio ? 1 : 0,
       'estado': _estadoEventoToString(estado),
+      'tiempo_aviso_antes': tiempoAvisoAntes != null
+          ? _tiempoAvisoAntesToString(tiempoAvisoAntes!)
+          : null,
       'fecha_hora_inicial_recordatorio':
           fechaHoraInicialRecordatorio?.millisecondsSinceEpoch,
       'tipo_recurrencia': tipoRecurrencia != null
@@ -123,6 +131,7 @@ class EventoModel extends Evento {
       horaEvento: horaEvento,
       tieneRecordatorio: tieneRecordatorio,
       estado: estado,
+      tiempoAvisoAntes: tiempoAvisoAntes,
       fechaHoraInicialRecordatorio: fechaHoraInicialRecordatorio,
       tipoRecurrencia: tipoRecurrencia,
       intervalo: intervalo,
@@ -213,6 +222,38 @@ class EventoModel extends Evento {
         return 'mensual';
       case TipoRecurrencia.anual:
         return 'anual';
+    }
+  }
+
+  static TiempoAvisoAntes _tiempoAvisoAntesFromString(String value) {
+    switch (value) {
+      case 'cinco_minutos':
+        return TiempoAvisoAntes.cincoMinutos;
+      case 'quince_minutos':
+        return TiempoAvisoAntes.quinceMinutos;
+      case 'treinta_minutos':
+        return TiempoAvisoAntes.treintaMinutos;
+      case 'una_hora':
+        return TiempoAvisoAntes.unaHora;
+      case 'dos_horas':
+        return TiempoAvisoAntes.dosHoras;
+      default:
+        throw ArgumentError('TiempoAvisoAntes desconocido: $value');
+    }
+  }
+
+  static String _tiempoAvisoAntesToString(TiempoAvisoAntes tiempo) {
+    switch (tiempo) {
+      case TiempoAvisoAntes.cincoMinutos:
+        return 'cinco_minutos';
+      case TiempoAvisoAntes.quinceMinutos:
+        return 'quince_minutos';
+      case TiempoAvisoAntes.treintaMinutos:
+        return 'treinta_minutos';
+      case TiempoAvisoAntes.unaHora:
+        return 'una_hora';
+      case TiempoAvisoAntes.dosHoras:
+        return 'dos_horas';
     }
   }
 }

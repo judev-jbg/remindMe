@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 /// Helper para gestionar la base de datos SQLite
 class DatabaseHelper {
   static const String _databaseName = 'remindme.db';
-  static const int _databaseVersion = 1;
+  static const int _databaseVersion = 2;
 
   // Nombres de tablas
   static const String tableEventos = 'eventos';
@@ -53,7 +53,8 @@ class DatabaseHelper {
         
         tiene_recordatorio INTEGER NOT NULL DEFAULT 0,
         estado TEXT NOT NULL DEFAULT 'habilitado' CHECK(estado IN ('habilitado', 'deshabilitado')),
-        
+        tiempo_aviso_antes TEXT CHECK(tiempo_aviso_antes IN ('cinco_minutos', 'quince_minutos', 'treinta_minutos', 'una_hora', 'dos_horas')),
+
         fecha_hora_inicial_recordatorio INTEGER,
         tipo_recurrencia TEXT CHECK(tipo_recurrencia IN ('ninguna', 'diaria', 'semanal', 'mensual', 'anual')),
         intervalo INTEGER,
@@ -105,9 +106,13 @@ class DatabaseHelper {
 
   /// Maneja actualizaciones de esquema
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Para futuras migraciones
+    // Migración de v1 a v2: agregar columna tiempo_aviso_antes
     if (oldVersion < 2) {
-      // Ejemplo: await db.execute('ALTER TABLE ...');
+      await db.execute('''
+        ALTER TABLE $tableEventos
+        ADD COLUMN tiempo_aviso_antes TEXT
+        CHECK(tiempo_aviso_antes IN ('cinco_minutos', 'quince_minutos', 'treinta_minutos', 'una_hora', 'dos_horas'))
+      ''');
     }
   }
 

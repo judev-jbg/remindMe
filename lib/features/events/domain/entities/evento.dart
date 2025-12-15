@@ -17,6 +17,7 @@ class Evento extends Equatable {
   // === CONTROL DE RECORDATORIOS ===
   final bool tieneRecordatorio;
   final EstadoEvento estado;
+  final TiempoAvisoAntes? tiempoAvisoAntes; // Solo para tipo "otro" con recordatorio
 
   // === CONFIGURACIÓN DE RECORDATORIOS ===
   final DateTime? fechaHoraInicialRecordatorio;
@@ -39,6 +40,7 @@ class Evento extends Equatable {
     this.horaEvento,
     required this.tieneRecordatorio,
     required this.estado,
+    this.tiempoAvisoAntes,
     this.fechaHoraInicialRecordatorio,
     this.tipoRecurrencia,
     this.intervalo,
@@ -88,6 +90,7 @@ class Evento extends Equatable {
     DateTime? horaEvento,
     bool? tieneRecordatorio,
     EstadoEvento? estado,
+    TiempoAvisoAntes? tiempoAvisoAntes,
     DateTime? fechaHoraInicialRecordatorio,
     TipoRecurrencia? tipoRecurrencia,
     int? intervalo,
@@ -106,6 +109,7 @@ class Evento extends Equatable {
       horaEvento: horaEvento ?? this.horaEvento,
       tieneRecordatorio: tieneRecordatorio ?? this.tieneRecordatorio,
       estado: estado ?? this.estado,
+      tiempoAvisoAntes: tiempoAvisoAntes ?? this.tiempoAvisoAntes,
       fechaHoraInicialRecordatorio:
           fechaHoraInicialRecordatorio ?? this.fechaHoraInicialRecordatorio,
       tipoRecurrencia: tipoRecurrencia ?? this.tipoRecurrencia,
@@ -128,6 +132,7 @@ class Evento extends Equatable {
     horaEvento,
     tieneRecordatorio,
     estado,
+    tiempoAvisoAntes,
     fechaHoraInicialRecordatorio,
     tipoRecurrencia,
     intervalo,
@@ -168,4 +173,16 @@ enum TipoRecurrencia {
 
   final String displayName;
   const TipoRecurrencia(this.displayName);
+}
+
+enum TiempoAvisoAntes {
+  cincoMinutos('5 minutos antes', Duration(minutes: 5)),
+  quinceMinutos('15 minutos antes', Duration(minutes: 15)),
+  treintaMinutos('30 minutos antes', Duration(minutes: 30)),
+  unaHora('1 hora antes', Duration(hours: 1)),
+  dosHoras('2 horas antes', Duration(hours: 2));
+
+  final String displayName;
+  final Duration duration;
+  const TiempoAvisoAntes(this.displayName, this.duration);
 }

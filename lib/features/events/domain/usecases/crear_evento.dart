@@ -44,6 +44,7 @@ class CrearEvento {
           horaEvento: params.horaEvento,
           tieneRecordatorio: true,
           estado: EstadoEvento.habilitado,
+          tiempoAvisoAntes: params.tiempoAvisoAntes,
           fechaCreacion: ahora,
           fechaActualizacion: ahora,
         );
@@ -70,6 +71,7 @@ class CrearEvento {
         horaEvento: params.horaEvento,
         tieneRecordatorio: params.tieneRecordatorio,
         estado: EstadoEvento.habilitado,
+        tiempoAvisoAntes: params.tiempoAvisoAntes,
         fechaHoraInicialRecordatorio: fechaHoraInicialRecordatorio,
         tipoRecurrencia: tipoRecurrencia,
         intervalo: intervalo,
@@ -103,6 +105,7 @@ class CrearEventoParams {
   final String? notas;
   final DateTime? horaEvento;
   final bool tieneRecordatorio;
+  final TiempoAvisoAntes? tiempoAvisoAntes;
 
   const CrearEventoParams({
     required this.nombre,
@@ -111,5 +114,6 @@ class CrearEventoParams {
     this.notas,
     this.horaEvento,
     this.tieneRecordatorio = false,
+    this.tiempoAvisoAntes,
   });
 }

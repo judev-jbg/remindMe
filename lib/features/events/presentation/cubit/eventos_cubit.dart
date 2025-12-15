@@ -57,6 +57,7 @@ class EventosCubit extends Cubit<EventosState> {
     String? notas,
     DateTime? horaEvento,
     bool tieneRecordatorio = false,
+    TiempoAvisoAntes? tiempoAvisoAntes,
   }) async {
     emit(EventosLoading());
 
@@ -67,6 +68,7 @@ class EventosCubit extends Cubit<EventosState> {
       notas: notas,
       horaEvento: horaEvento,
       tieneRecordatorio: tieneRecordatorio,
+      tiempoAvisoAntes: tiempoAvisoAntes,
     );
 
     final result = await crearEvento(params);
