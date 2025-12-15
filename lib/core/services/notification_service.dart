@@ -114,7 +114,16 @@ class NotificationService {
     );
 
     try {
-      final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
+      // Convertir correctamente a TZDateTime preservando la hora local
+      final tzScheduledDate = tz.TZDateTime(
+        tz.local,
+        scheduledDate.year,
+        scheduledDate.month,
+        scheduledDate.day,
+        scheduledDate.hour,
+        scheduledDate.minute,
+        scheduledDate.second,
+      );
       print('   TZ Scheduled Date: $tzScheduledDate');
 
       await _notifications.zonedSchedule(
