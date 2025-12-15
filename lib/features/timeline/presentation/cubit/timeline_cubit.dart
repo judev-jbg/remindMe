@@ -51,18 +51,26 @@ class TimelineCubit extends Cubit<TimelineState> {
       return EventoConFechaRelevante(evento, fechaRelevante);
     }).toList();
 
-    // Separar en pasados, hoy y futuros
-    final pasados =
-        eventosConFecha.where((e) => e.fechaRelevante.isBefore(hoy)).toList()
-          ..sort((a, b) => b.fechaRelevante.compareTo(a.fechaRelevante));
+    // Separar en pasados, hoy y futuros (comparando solo fechas, sin hora)
+    final pasados = eventosConFecha.where((e) {
+      final fechaSinHora =
+          DateTime(e.fechaRelevante.year, e.fechaRelevante.month, e.fechaRelevante.day);
+      return fechaSinHora.isBefore(hoy);
+    }).toList()
+      ..sort((a, b) => b.fechaRelevante.compareTo(a.fechaRelevante));
 
-    final hoyEventos = eventosConFecha
-        .where((e) => RecordatorioCalculator.esMismoDia(e.fechaRelevante, hoy))
-        .toList();
+    final hoyEventos = eventosConFecha.where((e) {
+      final fechaSinHora =
+          DateTime(e.fechaRelevante.year, e.fechaRelevante.month, e.fechaRelevante.day);
+      return fechaSinHora.isAtSameMomentAs(hoy);
+    }).toList();
 
-    final futuros =
-        eventosConFecha.where((e) => e.fechaRelevante.isAfter(hoy)).toList()
-          ..sort((a, b) => a.fechaRelevante.compareTo(b.fechaRelevante));
+    final futuros = eventosConFecha.where((e) {
+      final fechaSinHora =
+          DateTime(e.fechaRelevante.year, e.fechaRelevante.month, e.fechaRelevante.day);
+      return fechaSinHora.isAfter(hoy);
+    }).toList()
+      ..sort((a, b) => a.fechaRelevante.compareTo(b.fechaRelevante));
 
     // Construir los 7 slots
     return [

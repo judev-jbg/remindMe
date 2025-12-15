@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Core
 import 'core/database/database_helper.dart';
+import 'core/services/notification_service.dart';
 
 // Settings
 import 'features/settings/data/datasources/settings_local_data_source.dart';
@@ -23,6 +24,7 @@ import 'features/events/domain/usecases/obtener_todos_los_eventos.dart';
 import 'features/events/domain/usecases/actualizar_evento.dart';
 import 'features/events/domain/usecases/eliminar_evento.dart';
 import 'features/events/domain/usecases/obtener_evento_con_recordatorios.dart';
+import 'features/events/domain/usecases/programar_notificaciones_evento.dart';
 import 'features/events/presentation/cubit/eventos_cubit.dart';
 
 // Notifications
@@ -52,6 +54,9 @@ Future<void> configureDependencies() async {
 
   // Database Helper
   getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper.instance);
+
+  // Notification Service
+  getIt.registerLazySingleton<NotificationService>(() => NotificationService());
 
   // ============================================
   // SETTINGS FEATURE
@@ -96,6 +101,7 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton(() => ActualizarEvento(getIt()));
   getIt.registerLazySingleton(() => EliminarEvento(getIt()));
   getIt.registerLazySingleton(() => ObtenerEventoConRecordatorios(getIt()));
+  getIt.registerLazySingleton(() => ProgramarNotificacionesEvento(getIt()));
 
   // Cubits
   getIt.registerFactory(
@@ -105,7 +111,9 @@ Future<void> configureDependencies() async {
       actualizarEvento: getIt(),
       eliminarEvento: getIt(),
       obtenerEventoConRecordatorios: getIt(),
-      crearNotificacionLog: getIt(), // Necesita el use case de notificaciones
+      crearNotificacionLog: getIt(),
+      programarNotificacionesEvento: getIt(),
+      notificationService: getIt(),
     ),
   );
 

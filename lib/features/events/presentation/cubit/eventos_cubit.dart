@@ -10,8 +10,10 @@ import '../../domain/usecases/obtener_todos_los_eventos.dart';
 import '../../domain/usecases/actualizar_evento.dart';
 import '../../domain/usecases/eliminar_evento.dart';
 import '../../domain/usecases/obtener_evento_con_recordatorios.dart';
+import '../../domain/usecases/programar_notificaciones_evento.dart';
 import '../../../notifications/domain/usecases/crear_notificacion_log.dart';
 import '../../../notifications/domain/entities/notificacion_log.dart';
+import '../../../../core/services/notification_service.dart';
 
 /// Cubit para gestionar el estado de los eventos
 class EventosCubit extends Cubit<EventosState> {
@@ -21,6 +23,8 @@ class EventosCubit extends Cubit<EventosState> {
   final EliminarEvento eliminarEvento;
   final ObtenerEventoConRecordatorios obtenerEventoConRecordatorios;
   final CrearNotificacionLog crearNotificacionLog;
+  final ProgramarNotificacionesEvento programarNotificacionesEvento;
+  final NotificationService notificationService;
 
   EventosCubit({
     required this.crearEvento,
@@ -29,6 +33,8 @@ class EventosCubit extends Cubit<EventosState> {
     required this.eliminarEvento,
     required this.obtenerEventoConRecordatorios,
     required this.crearNotificacionLog,
+    required this.programarNotificacionesEvento,
+    required this.notificationService,
   }) : super(EventosInitial());
 
   /// Carga todos los eventos
@@ -81,6 +87,11 @@ class EventosCubit extends Cubit<EventosState> {
             'tipo': evento.tipo.name,
           }),
         );
+
+        // Programar notificaciones si el evento tiene recordatorio
+        if (evento.tieneRecordatorio) {
+          await programarNotificacionesEvento(evento);
+        }
 
         // Emitir estado de creación primero para el listener
         emit(EventoCreado(evento));
@@ -147,6 +158,9 @@ class EventosCubit extends Cubit<EventosState> {
           }),
         );
 
+        // Reprogramar notificaciones (cancelar anteriores y crear nuevas)
+        await programarNotificacionesEvento(evento);
+
         // Emitir estado de actualización primero para el listener
         emit(EventoActualizado(evento));
 
@@ -167,6 +181,9 @@ class EventosCubit extends Cubit<EventosState> {
         emit(EventosError(failure.message));
       },
       (_) async {
+        // Cancelar todas las notificaciones del evento eliminado
+        await notificationService.cancelEventNotifications(eventoId);
+
         // Registrar notificación
         await _registrarNotificacion(
           tipo: TipoAccion.eventoEliminado,

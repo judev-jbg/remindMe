@@ -12,6 +12,7 @@ import 'features/events/presentation/cubit/eventos_cubit.dart';
 import 'features/notifications/presentation/cubit/notificaciones_cubit.dart';
 import 'features/timeline/presentation/cubit/timeline_cubit.dart';
 import 'injection_container.dart';
+import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,11 @@ void main() async {
 
   // Configurar inyección de dependencias
   await configureDependencies();
+
+  // Inicializar servicio de notificaciones
+  final notificationService = getIt<NotificationService>();
+  await notificationService.initialize();
+  await notificationService.requestPermissions();
 
   runApp(const RemindMeApp());
 }

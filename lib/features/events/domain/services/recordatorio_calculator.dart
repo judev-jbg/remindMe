@@ -32,9 +32,17 @@ class RecordatorioCalculator {
         return unMesDespues;
 
       case TipoEvento.otro:
-        // 1 hora antes de horaEvento
+        // 1 hora antes de horaEvento, o 8:00 AM si no se especificó hora
         if (evento.horaEvento == null) {
-          throw ArgumentError('Tipo "otro" requiere horaEvento');
+          // Usar 8:00 AM del mismo día como fallback
+          return DateTime(
+            evento.fecha.year,
+            evento.fecha.month,
+            evento.fecha.day,
+            8,
+            0,
+            0,
+          );
         }
         return evento.horaEvento!.subtract(const Duration(hours: 1));
     }

@@ -33,6 +33,7 @@ dependencies:
   # Notificaciones
   flutter_local_notifications: ^19.4.2
   workmanager: ^0.9.0+3
+  timezone: ^0.10.1
 
   # Utilidades
   equatable: ^2.0.5
