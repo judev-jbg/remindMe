@@ -1,8 +1,10 @@
 // lib/core/services/notification_service.dart
 
+import 'dart:io' show Platform;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'alarm_service.dart';
 
 /// Servicio para gestionar notificaciones locales
 class NotificationService {
@@ -135,6 +137,49 @@ class NotificationService {
       return;
     }
 
+    // En Android, usar AlarmService para alarmas exactas más confiables
+    if (Platform.isAndroid) {
+      print('📱 Usando AlarmService para Android (alarmas exactas)');
+      final success = await AlarmService.scheduleNotification(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: scheduledDate,
+        payload: payload,
+      );
+
+      if (success) {
+        print('✅ Notificación programada con AlarmService');
+      } else {
+        print('⚠️ AlarmService falló, intentando con flutter_local_notifications');
+        await _scheduleWithFlutterLocalNotifications(
+          id: id,
+          title: title,
+          body: body,
+          scheduledDate: scheduledDate,
+          payload: payload,
+        );
+      }
+    } else {
+      // En iOS, usar flutter_local_notifications
+      await _scheduleWithFlutterLocalNotifications(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: scheduledDate,
+        payload: payload,
+      );
+    }
+  }
+
+  /// Programa una notificación usando flutter_local_notifications (fallback o iOS)
+  Future<void> _scheduleWithFlutterLocalNotifications({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledDate,
+    String? payload,
+  }) async {
     const androidDetails = AndroidNotificationDetails(
       'remindme_channel', // Channel ID
       'Recordatorios', // Channel name

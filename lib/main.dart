@@ -13,6 +13,7 @@ import 'features/notifications/presentation/cubit/notificaciones_cubit.dart';
 import 'features/timeline/presentation/cubit/timeline_cubit.dart';
 import 'injection_container.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/alarm_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,13 +27,17 @@ void main() async {
   // Configurar inyección de dependencias
   await configureDependencies();
 
+  // Inicializar servicio de alarmas (Android)
+  await AlarmService.initialize();
+  AlarmService.registerPort();
+
   // Inicializar servicio de notificaciones
   final notificationService = getIt<NotificationService>();
   await notificationService.initialize();
   await notificationService.requestPermissions();
   await notificationService.showImmediateNotification(
     id: 999,
-    title: '🧪 Test de Notificación',
+    title: '�� Test de Notificación',
     body: 'Si ves esto, las notificaciones funcionan!',
   );
 
