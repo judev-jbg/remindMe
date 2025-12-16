@@ -1,14 +1,11 @@
 // lib/features/timeline/presentation/cubit/timeline_cubit.dart
 
-import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../events/domain/entities/evento.dart';
 import '../../../events/domain/usecases/obtener_todos_los_eventos.dart';
-import '../../../events/domain/services/recordatorio_calculator.dart';
 import '../../../notifications/domain/usecases/crear_notificacion_log.dart';
-import '../../../notifications/domain/entities/notificacion_log.dart';
 
 /// Cubit para gestionar el estado del timeline
 class TimelineCubit extends Cubit<TimelineState> {
@@ -53,24 +50,31 @@ class TimelineCubit extends Cubit<TimelineState> {
 
     // Separar en pasados, hoy y futuros (comparando solo fechas, sin hora)
     final pasados = eventosConFecha.where((e) {
-      final fechaSinHora =
-          DateTime(e.fechaRelevante.year, e.fechaRelevante.month, e.fechaRelevante.day);
+      final fechaSinHora = DateTime(
+        e.fechaRelevante.year,
+        e.fechaRelevante.month,
+        e.fechaRelevante.day,
+      );
       return fechaSinHora.isBefore(hoy);
-    }).toList()
-      ..sort((a, b) => b.fechaRelevante.compareTo(a.fechaRelevante));
+    }).toList()..sort((a, b) => b.fechaRelevante.compareTo(a.fechaRelevante));
 
     final hoyEventos = eventosConFecha.where((e) {
-      final fechaSinHora =
-          DateTime(e.fechaRelevante.year, e.fechaRelevante.month, e.fechaRelevante.day);
+      final fechaSinHora = DateTime(
+        e.fechaRelevante.year,
+        e.fechaRelevante.month,
+        e.fechaRelevante.day,
+      );
       return fechaSinHora.isAtSameMomentAs(hoy);
     }).toList();
 
     final futuros = eventosConFecha.where((e) {
-      final fechaSinHora =
-          DateTime(e.fechaRelevante.year, e.fechaRelevante.month, e.fechaRelevante.day);
+      final fechaSinHora = DateTime(
+        e.fechaRelevante.year,
+        e.fechaRelevante.month,
+        e.fechaRelevante.day,
+      );
       return fechaSinHora.isAfter(hoy);
-    }).toList()
-      ..sort((a, b) => a.fechaRelevante.compareTo(b.fechaRelevante));
+    }).toList()..sort((a, b) => a.fechaRelevante.compareTo(b.fechaRelevante));
 
     // Construir los 7 slots
     return [
@@ -90,11 +94,7 @@ class TimelineCubit extends Cubit<TimelineState> {
       case TipoEvento.cumpleanos:
       case TipoEvento.aniversario:
         // Para cumpleaños y aniversarios: mismo día y mes, año actual
-        return DateTime(
-          referencia.year,
-          evento.fecha.month,
-          evento.fecha.day,
-        );
+        return DateTime(referencia.year, evento.fecha.month, evento.fecha.day);
 
       case TipoEvento.mesario:
         // Para mesarios: mostrar el mesario del MES ACTUAL (se repite cada mes)
@@ -150,25 +150,6 @@ class TimelineCubit extends Cubit<TimelineState> {
       ),
     );
   }
-
-  /// Registra notificación del timeline generado
-  Future<void> _registrarTimelineGenerado(List<TimelineSlot> timeline) async {
-    final eventosVisibles = timeline
-        .where((slot) => slot.visible && slot.eventos != null)
-        .expand((slot) => slot.eventos!)
-        .toList();
-
-    final params = CrearNotificacionParams(
-      tipo: TipoAccion.timelineGenerado,
-      titulo: 'Timeline actualizado',
-      detalle: jsonEncode({
-        'fecha': DateTime.now().toIso8601String(),
-        'eventos_visibles': eventosVisibles.length,
-      }),
-    );
-
-    await crearNotificacionLog(params);
-  }
 }
 
 // ============================================
@@ -215,7 +196,8 @@ class TimelineSlot extends Equatable {
   final List<Evento>? eventos;
   final DateTime? fecha;
   final String? mensajeVacio;
-  final Map<String, DateTime>? fechasRelevantes; // Map de eventoId -> fechaRelevante
+  final Map<String, DateTime>?
+  fechasRelevantes; // Map de eventoId -> fechaRelevante
 
   const TimelineSlot({
     required this.index,

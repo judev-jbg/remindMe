@@ -53,7 +53,15 @@ class ProgramarNotificacionesEvento {
         fechas.add(evento.fechaHoraInicialRecordatorio!);
         print('📅 Notificación única programada para: ${evento.fechaHoraInicialRecordatorio}');
       } else {
+        // Si el recordatorio calculado está en el pasado, usar la hora del evento como fallback
         print('⚠️ Fecha de recordatorio no es futura: ${evento.fechaHoraInicialRecordatorio}');
+
+        if (evento.horaEvento != null && evento.horaEvento!.isAfter(ahora)) {
+          fechas.add(evento.horaEvento!);
+          print('✅ Programando recordatorio en la hora del evento: ${evento.horaEvento}');
+        } else {
+          print('❌ La hora del evento también está en el pasado: ${evento.horaEvento}');
+        }
       }
       return fechas;
     }
