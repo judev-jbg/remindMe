@@ -7,10 +7,12 @@ import 'notification_service.dart';
 
 /// Servicio para gestionar alarmas exactas con android_alarm_manager_plus
 /// Este servicio garantiza que las notificaciones se disparen en el momento exacto
+@pragma('vm:entry-point')
 class AlarmService {
   static const String _portName = 'remindme_alarm_port';
 
   /// Inicializa el servicio de alarmas
+  @pragma('vm:entry-point')
   static Future<bool> initialize() async {
     try {
       final result = await AndroidAlarmManager.initialize();
@@ -23,6 +25,7 @@ class AlarmService {
   }
 
   /// Programa una alarma para mostrar una notificación
+  @pragma('vm:entry-point')
   static Future<bool> scheduleNotification({
     required int id,
     required String title,
@@ -76,6 +79,7 @@ class AlarmService {
   }
 
   /// Cancela una alarma específica
+  @pragma('vm:entry-point')
   static Future<bool> cancelAlarm(int id) async {
     try {
       await AndroidAlarmManager.cancel(id);
@@ -117,6 +121,7 @@ class AlarmService {
   }
 
   /// Registra el puerto para comunicación entre isolates
+  @pragma('vm:entry-point')
   static void registerPort() {
     final ReceivePort port = ReceivePort();
     IsolateNameServer.registerPortWithName(port.sendPort, _portName);
@@ -127,6 +132,7 @@ class AlarmService {
   }
 
   /// Desregistra el puerto
+  @pragma('vm:entry-point')
   static void unregisterPort() {
     IsolateNameServer.removePortNameMapping(_portName);
   }
