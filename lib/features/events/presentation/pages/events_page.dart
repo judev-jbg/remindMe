@@ -202,10 +202,12 @@ class _EventsPageState extends State<EventsPage> {
     );
 
     return GradientCard(
+      onTap: () => _showEventDetailsBottomSheet(context, evento),
       gradient: AppGradients.getEventCardGradient(index),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Fila 1: Nombre y tipo de evento
           Row(
             children: [
               Expanded(
@@ -245,6 +247,7 @@ class _EventsPageState extends State<EventsPage> {
             ],
           ),
           const SizedBox(height: 8),
+          // Fila 2: Fecha con icono de recordatorio a la derecha
           Row(
             children: [
               Icon(
@@ -253,15 +256,26 @@ class _EventsPageState extends State<EventsPage> {
                 color: Colors.white.withOpacity(0.9),
               ),
               const SizedBox(width: 6),
-              Text(
-                dateFormatter.format(evento.fecha),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withOpacity(0.9),
+              Expanded(
+                child: Text(
+                  dateFormatter.format(evento.fecha),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withOpacity(0.9),
+                  ),
                 ),
               ),
+              if (evento.tieneRecordatorio)
+                Icon(
+                  evento.estado == EstadoEvento.habilitado
+                      ? Icons.notifications_active_outlined
+                      : Icons.notifications_off_outlined,
+                  size: 18,
+                  color: Colors.white.withOpacity(0.9),
+                ),
             ],
           ),
-          if (evento.horaEvento != null) ...[
+          // Fila 3: Hora del evento (solo para tipo Otro)
+          if (evento.tipo == TipoEvento.otro && evento.horaEvento != null) ...[
             const SizedBox(height: 4),
             Row(
               children: [
@@ -280,22 +294,19 @@ class _EventsPageState extends State<EventsPage> {
               ],
             ),
           ],
-          if (evento.tieneRecordatorio) ...[
+          // Fila 4: Años/Meses transcurridos (solo para Aniversario/Cumpleaños/Mesario)
+          if (evento.tipo != TipoEvento.otro) ...[
             const SizedBox(height: 4),
             Row(
               children: [
                 Icon(
-                  evento.estado == EstadoEvento.habilitado
-                      ? Icons.notifications_active_outlined
-                      : Icons.notifications_off_outlined,
+                  Icons.history_outlined,
                   size: 16,
                   color: Colors.white.withOpacity(0.9),
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  evento.estado == EstadoEvento.habilitado
-                      ? 'Recordatorio activo'
-                      : 'Recordatorio pausado',
+                  _calcularTiempoTranscurrido(evento),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white.withOpacity(0.9),
                   ),
@@ -303,20 +314,40 @@ class _EventsPageState extends State<EventsPage> {
               ],
             ),
           ],
-          if (evento.notas != null && evento.notas!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              evento.notas!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: Colors.white.withOpacity(0.8),
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
         ],
       ),
     );
+  }
+
+  String _calcularTiempoTranscurrido(Evento evento) {
+    final ahora = DateTime.now();
+    final desde = evento.fecha;
+
+    if (evento.tipo == TipoEvento.mesario) {
+      // Calcular meses
+      final meses = (ahora.year - desde.year) * 12 + (ahora.month - desde.month);
+      return meses == 1 ? 'Ha pasado 1 mes' : 'Han pasado $meses meses';
+    } else {
+      // Calcular años y meses para Aniversario y Cumpleaños
+      int anios = ahora.year - desde.year;
+      int meses = ahora.month - desde.month;
+
+      if (meses < 0) {
+        anios--;
+        meses += 12;
+      }
+
+      final aniosTexto = anios == 1 ? '1 año' : '$anios años';
+      final mesesTexto = meses == 1 ? '1 mes' : '$meses meses';
+
+      if (anios > 0 && meses > 0) {
+        return 'Han pasado $aniosTexto y $mesesTexto';
+      } else if (anios > 0) {
+        return 'Han pasado $aniosTexto';
+      } else {
+        return 'Han pasado $mesesTexto';
+      }
+    }
   }
 
   Widget _buildDismissBackground({
@@ -422,6 +453,110 @@ class _EventsPageState extends State<EventsPage> {
             Navigator.of(context).pop();
           }
         },
+      ),
+    );
+  }
+
+  void _showEventDetailsBottomSheet(BuildContext context, Evento evento) {
+    final theme = Theme.of(context);
+    final dateFormatter = DateFormat('dd/MM/yyyy \'a las\' HH:mm', 'es_ES');
+
+    BottomModal.show(
+      context: context,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Título del evento
+            Row(
+              children: [
+                Icon(
+                  _getIconForTipo(evento.tipo),
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    evento.nombre,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Notas
+            if (evento.notas != null && evento.notas!.isNotEmpty) ...[
+              Text(
+                'Notas',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  evento.notas!,
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            // Próximo recordatorio
+            if (evento.tieneRecordatorio &&
+                evento.estado == EstadoEvento.habilitado &&
+                evento.fechaHoraInicialRecordatorio != null) ...[
+              Text(
+                'Próximo recordatorio',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.notifications_active_outlined,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        dateFormatter.format(evento.fechaHoraInicialRecordatorio!),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

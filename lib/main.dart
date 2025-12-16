@@ -35,11 +35,6 @@ void main() async {
   final notificationService = getIt<NotificationService>();
   await notificationService.initialize();
   await notificationService.requestPermissions();
-  await notificationService.showImmediateNotification(
-    id: 999,
-    title: '�� Test de Notificación',
-    body: 'Si ves esto, las notificaciones funcionan!',
-  );
 
   runApp(const RemindMeApp());
 }

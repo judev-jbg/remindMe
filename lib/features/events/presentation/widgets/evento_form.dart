@@ -35,6 +35,26 @@ class _EventoFormState extends State<EventoForm> {
   TimeOfDay? _horaEvento;
   TiempoAvisoAntes? _tiempoAvisoAntes;
 
+  bool get _puedeActivarRecordatorio {
+    // Solo para tipo "Otro"
+    if (_tipoSeleccionado != TipoEvento.otro) return true;
+
+    // Si no hay hora seleccionada, no se puede activar
+    if (_horaEvento == null) return false;
+
+    // Construir fecha/hora del evento
+    final fechaHoraEvento = DateTime(
+      _fechaSeleccionada.year,
+      _fechaSeleccionada.month,
+      _fechaSeleccionada.day,
+      _horaEvento!.hour,
+      _horaEvento!.minute,
+    );
+
+    // El evento debe ser futuro
+    return fechaHoraEvento.isAfter(DateTime.now());
+  }
+
   @override
   void initState() {
     super.initState();
@@ -214,17 +234,23 @@ class _EventoFormState extends State<EventoForm> {
               // Recordatorio switch
               SwitchListTile(
                 title: const Text('Activar recordatorio'),
-                subtitle: const Text('Recibe notificaciones para este evento'),
+                subtitle: Text(
+                  !_puedeActivarRecordatorio && _tipoSeleccionado == TipoEvento.otro
+                      ? 'El evento debe ser futuro para activar recordatorios'
+                      : 'Recibe notificaciones para este evento',
+                ),
                 value: _tieneRecordatorio,
-                onChanged: (value) {
-                  setState(() {
-                    _tieneRecordatorio = value;
-                    // Si se desactiva el recordatorio, limpiar tiempo de aviso
-                    if (!value) {
-                      _tiempoAvisoAntes = null;
-                    }
-                  });
-                },
+                onChanged: _puedeActivarRecordatorio
+                    ? (value) {
+                        setState(() {
+                          _tieneRecordatorio = value;
+                          // Si se desactiva el recordatorio, limpiar tiempo de aviso
+                          if (!value) {
+                            _tiempoAvisoAntes = null;
+                          }
+                        });
+                      }
+                    : null, // Deshabilitar si no se puede activar
                 secondary: Icon(
                   _tieneRecordatorio
                       ? Icons.notifications_active
@@ -333,6 +359,11 @@ class _EventoFormState extends State<EventoForm> {
     if (fecha != null) {
       setState(() {
         _fechaSeleccionada = fecha;
+        // Desactivar recordatorio si el evento ya no es futuro (solo para tipo Otro)
+        if (_tipoSeleccionado == TipoEvento.otro && !_puedeActivarRecordatorio) {
+          _tieneRecordatorio = false;
+          _tiempoAvisoAntes = null;
+        }
       });
     }
   }
@@ -346,6 +377,11 @@ class _EventoFormState extends State<EventoForm> {
     if (hora != null) {
       setState(() {
         _horaEvento = hora;
+        // Desactivar recordatorio si el evento ya no es futuro (solo para tipo Otro)
+        if (_tipoSeleccionado == TipoEvento.otro && !_puedeActivarRecordatorio) {
+          _tieneRecordatorio = false;
+          _tiempoAvisoAntes = null;
+        }
       });
     }
   }
@@ -389,6 +425,24 @@ class _EventoFormState extends State<EventoForm> {
         ),
       );
       return;
+    }
+
+    // Validar que el recordatorio no sea en el pasado
+    if (_tipoSeleccionado == TipoEvento.otro && _tieneRecordatorio && horaEvento != null && _tiempoAvisoAntes != null) {
+      final fechaHoraRecordatorio = horaEvento.subtract(_tiempoAvisoAntes!.duration);
+      if (fechaHoraRecordatorio.isBefore(DateTime.now()) || fechaHoraRecordatorio.isAtSameMomentAs(DateTime.now())) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'El recordatorio será programado para la hora del evento (${_horaEvento!.format(context)}) '
+              'ya que la opción seleccionada genera un recordatorio en el pasado',
+            ),
+            duration: const Duration(seconds: 4),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        // Continuar de todas formas pero el sistema ajustará el recordatorio
+      }
     }
 
     // Preparar datos
