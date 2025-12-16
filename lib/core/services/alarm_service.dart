@@ -3,6 +3,9 @@
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:uuid/uuid.dart';
+import '../../core/database/database_helper.dart';
+import '../../features/notifications/domain/entities/notificacion_log.dart';
 import 'notification_service.dart';
 
 /// Servicio para gestionar alarmas exactas con android_alarm_manager_plus
@@ -102,8 +105,8 @@ class AlarmService {
     final SendPort? send = IsolateNameServer.lookupPortByName(_portName);
     send?.send(params);
 
-    // Mostrar la notificación directamente
     try {
+      // 1. Mostrar la notificación
       final notificationService = NotificationService();
       await notificationService.initialize();
 
@@ -115,8 +118,47 @@ class AlarmService {
       );
 
       print('✅ AlarmService: Notificación mostrada');
+
+      // 2. Registrar en la base de datos
+      await _registrarNotificacionEnLog(
+        params['title'] as String,
+        params['body'] as String,
+      );
+
+      print('✅ AlarmService: Notificación registrada en log');
     } catch (e) {
-      print('❌ AlarmService: Error mostrando notificación: $e');
+      print('❌ AlarmService: Error en callback: $e');
+    }
+  }
+
+  /// Registra la notificación en la tabla de logs
+  @pragma('vm:entry-point')
+  static Future<void> _registrarNotificacionEnLog(
+    String titulo,
+    String detalle,
+  ) async {
+    try {
+      final dbHelper = DatabaseHelper.instance;
+      final db = await dbHelper.database;
+
+      const uuid = Uuid();
+      final notificacion = {
+        'id': uuid.v4(),
+        'tipo': 'recordatorioEnviado',
+        'titulo': titulo,
+        'detalle': detalle,
+        'fecha_hora': DateTime.now().millisecondsSinceEpoch,
+        'marcada': 0,
+      };
+
+      await db.insert(
+        DatabaseHelper.tableNotificacionesLog,
+        notificacion,
+      );
+
+      print('📝 Notificación registrada en base de datos');
+    } catch (e) {
+      print('❌ Error registrando notificación en log: $e');
     }
   }
 
