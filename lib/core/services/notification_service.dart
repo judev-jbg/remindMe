@@ -21,10 +21,14 @@ class NotificationService {
 
     // Inicializar zonas horarias
     tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation('America/La_Paz')); // Ajustar según tu zona
+    tz.setLocalLocation(
+      tz.getLocation('Europe/Madrid'),
+    ); // Ajustar según tu zona
 
     // Configuración para Android
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
     // Configuración para iOS
     const iosSettings = DarwinInitializationSettings(
@@ -43,6 +47,25 @@ class NotificationService {
       onDidReceiveNotificationResponse: _onNotificationTapped,
     );
 
+    // CRITICAL: Crear el canal de notificaciones explícitamente para Android 8.0+
+    const androidChannel = AndroidNotificationChannel(
+      'remindme_channel', // ID debe coincidir con el usado en las notificaciones
+      'Recordatorios', // Nombre visible para el usuario
+      description: 'Notificaciones de recordatorios de eventos',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+      showBadge: true,
+    );
+
+    // Registrar el canal en Android
+    await _notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidChannel);
+
+    print('✅ Canal de notificaciones creado: ${androidChannel.id}');
+
     _initialized = true;
   }
 
@@ -59,22 +82,29 @@ class NotificationService {
     // Solicitar permisos para iOS
     final iosResult = await _notifications
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+          IOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
 
     // Solicitar permisos para Android 13+
-    final androidResult = await _notifications
+    final androidNotif = _notifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    final androidResult = await androidNotif?.requestNotificationsPermission();
+
+    // Solicitar permiso para alarmas exactas (Android 12+)
+    final exactAlarmPermission = await androidNotif?.requestExactAlarmsPermission();
+
+    // Verificar si las alarmas exactas están permitidas
+    final canScheduleExact = await androidNotif?.canScheduleExactNotifications();
 
     print('🔔 Permisos de notificación:');
     print('   iOS: ${iosResult ?? "N/A"}');
-    print('   Android: ${androidResult ?? "N/A"}');
+    print('   Android Notif: ${androidResult ?? "N/A"}');
+    print('   Android Exact Alarms: $exactAlarmPermission');
+    print('   Can Schedule Exact: ${canScheduleExact ?? "N/A"}');
 
     return (iosResult ?? androidResult) ?? true;
   }
@@ -95,7 +125,9 @@ class NotificationService {
     print('   Título: $title');
     print('   Fecha programada: $scheduledDate');
     print('   Fecha actual: $ahora');
-    print('   Diferencia: ${scheduledDate.difference(ahora).inMinutes} minutos');
+    print(
+      '   Diferencia: ${scheduledDate.difference(ahora).inMinutes} minutos',
+    );
 
     // Verificar que la fecha sea futura
     if (scheduledDate.isBefore(ahora)) {
