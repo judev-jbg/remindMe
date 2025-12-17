@@ -87,7 +87,6 @@ flutter:
   # Assets que agregaremos más adelante
   assets:
     - assets/images/
-  #   - assets/animations/
 
   fonts:
     - family: Inter

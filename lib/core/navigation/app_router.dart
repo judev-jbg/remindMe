@@ -86,7 +86,7 @@ class _ErrorPage extends StatelessWidget {
             Text(
               'La página que buscas no existe',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 32),

@@ -66,15 +66,14 @@ class NotificationService {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(androidChannel);
 
-    print('✅ Canal de notificaciones creado: ${androidChannel.id}');
-
+    // Notification channel created successfully
     _initialized = true;
   }
 
   /// Maneja el tap en una notificación
   void _onNotificationTapped(NotificationResponse response) {
     // TODO: Navegar a la pantalla del evento
-    print('Notification tapped: ${response.payload}');
+    // Error silencioso en producción - notification tap detected
   }
 
   /// Solicita permisos de notificación
@@ -102,11 +101,11 @@ class NotificationService {
     // Verificar si las alarmas exactas están permitidas
     final canScheduleExact = await androidNotif?.canScheduleExactNotifications();
 
-    print('🔔 Permisos de notificación:');
-    print('   iOS: ${iosResult ?? "N/A"}');
-    print('   Android Notif: ${androidResult ?? "N/A"}');
-    print('   Android Exact Alarms: $exactAlarmPermission');
-    print('   Can Schedule Exact: ${canScheduleExact ?? "N/A"}');
+    // Error silencioso en producción - notification permissions requested
+    // iOS: ${iosResult ?? "N/A"}
+    // Android Notif: ${androidResult ?? "N/A"}
+    // Android Exact Alarms: $exactAlarmPermission
+    // Can Schedule Exact: ${canScheduleExact ?? "N/A"}
 
     return (iosResult ?? androidResult) ?? true;
   }
@@ -122,24 +121,22 @@ class NotificationService {
     if (!_initialized) await initialize();
 
     final ahora = DateTime.now();
-    print('⏰ Programando notificación:');
-    print('   ID: $id');
-    print('   Título: $title');
-    print('   Fecha programada: $scheduledDate');
-    print('   Fecha actual: $ahora');
-    print(
-      '   Diferencia: ${scheduledDate.difference(ahora).inMinutes} minutos',
-    );
+    // Error silencioso en producción - scheduling notification
+    // ID: $id
+    // Título: $title
+    // Fecha programada: $scheduledDate
+    // Fecha actual: $ahora
+    // Diferencia: ${scheduledDate.difference(ahora).inMinutes} minutos
 
     // Verificar que la fecha sea futura
     if (scheduledDate.isBefore(ahora)) {
-      print('❌ Cannot schedule notification in the past: $scheduledDate');
+      // Error silencioso en producción - cannot schedule notification in the past
       return;
     }
 
     // En Android, usar AlarmService para alarmas exactas más confiables
     if (Platform.isAndroid) {
-      print('📱 Usando AlarmService para Android (alarmas exactas)');
+      // Error silencioso en producción - using AlarmService for Android
       final success = await AlarmService.scheduleNotification(
         id: id,
         title: title,
@@ -149,9 +146,9 @@ class NotificationService {
       );
 
       if (success) {
-        print('✅ Notificación programada con AlarmService');
+        // Error silencioso en producción - notification scheduled with AlarmService
       } else {
-        print('⚠️ AlarmService falló, intentando con flutter_local_notifications');
+        // Error silencioso en producción - AlarmService failed, fallback to flutter_local_notifications
         await _scheduleWithFlutterLocalNotifications(
           id: id,
           title: title,
@@ -212,7 +209,7 @@ class NotificationService {
         scheduledDate.minute,
         scheduledDate.second,
       );
-      print('   TZ Scheduled Date: $tzScheduledDate');
+      // Error silencioso en producción - TZ Scheduled Date: $tzScheduledDate
 
       await _notifications.zonedSchedule(
         id,
@@ -224,14 +221,14 @@ class NotificationService {
         payload: payload,
       );
 
-      print('✅ Notification scheduled: $title at $scheduledDate');
+      // Error silencioso en producción - notification scheduled successfully
 
       // Verificar notificaciones pendientes
       final pending = await _notifications.pendingNotificationRequests();
-      print('📋 Total notificaciones pendientes: ${pending.length}');
+      // Error silencioso en producción - total pending notifications: ${pending.length}
     } catch (e) {
-      print('❌ Error scheduling notification: $e');
-      print('   Stack trace: ${StackTrace.current}');
+      // Error silencioso en producción - error scheduling notification
+      // Stack trace available in debug mode
     }
   }
 
@@ -299,10 +296,10 @@ class NotificationService {
   }) async {
     if (!_initialized) await initialize();
 
-    print('📢 Mostrando notificación inmediata:');
-    print('   ID: $id');
-    print('   Título: $title');
-    print('   Cuerpo: $body');
+    // Error silencioso en producción - showing immediate notification
+    // ID: $id
+    // Título: $title
+    // Cuerpo: $body
 
     const androidDetails = AndroidNotificationDetails(
       'remindme_channel',
@@ -334,9 +331,9 @@ class NotificationService {
         notificationDetails,
         payload: payload,
       );
-      print('✅ Notificación inmediata mostrada');
+      // Error silencioso en producción - immediate notification shown successfully
     } catch (e) {
-      print('❌ Error mostrando notificación inmediata: $e');
+      // Error silencioso en producción - error showing immediate notification
     }
   }
 }

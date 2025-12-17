@@ -146,8 +146,8 @@ class BottomNavigationShell extends StatelessWidget {
               _getPageSubtitle(navigationShell.currentIndex),
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: navigationShell.currentIndex == 2
-                    ? theme.colorScheme.onSurface.withOpacity(0.9)
-                    : AppColors.onStaticPrimary.withOpacity(0.9),
+                    ? theme.colorScheme.onSurface.withValues(alpha: 0.9)
+                    : AppColors.onStaticPrimary.withValues(alpha: 0.9),
               ),
             ),
           ],
@@ -211,8 +211,8 @@ class BottomNavigationShell extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: () => _onTap(context, index),
-        splashColor: Colors.white.withOpacity(0.9), // Efecto visual opcional
-        highlightColor: Colors.white.withOpacity(0.1),
+        splashColor: Colors.white.withValues(alpha: 0.9), // Efecto visual opcional
+        highlightColor: Colors.white.withValues(alpha: 0.1),
         child: Container(
           height: 60,
           alignment: Alignment.center,
@@ -222,11 +222,11 @@ class BottomNavigationShell extends StatelessWidget {
               Icon(
                 isSelected ? selectedIcon : icon,
                 color: navigationShell.currentIndex == 2
-                    ? AppColors.onStaticPrimary.withOpacity(
-                        isSelected ? 1.0 : 0.6,
+                    ? AppColors.onStaticPrimary.withValues(
+                        alpha: isSelected ? 1.0 : 0.6,
                       )
-                    : theme.colorScheme.onSurface.withOpacity(
-                        isSelected ? 1.0 : 0.6,
+                    : theme.colorScheme.onSurface.withValues(
+                        alpha: isSelected ? 1.0 : 0.6,
                       ),
                 size: 22,
               ),
@@ -235,11 +235,11 @@ class BottomNavigationShell extends StatelessWidget {
                 isSelected ? label : "",
                 style: TextStyle(
                   color: navigationShell.currentIndex == 2
-                      ? AppColors.onStaticPrimary.withOpacity(
-                          isSelected ? 1.0 : 0.6,
+                      ? AppColors.onStaticPrimary.withValues(
+                          alpha: isSelected ? 1.0 : 0.6,
                         )
-                      : theme.colorScheme.onSurface.withOpacity(
-                          isSelected ? 1.0 : 0.6,
+                      : theme.colorScheme.onSurface.withValues(
+                          alpha: isSelected ? 1.0 : 0.6,
                         ),
                   fontSize: 12,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,

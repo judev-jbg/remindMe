@@ -116,7 +116,7 @@ class _BottomModalState extends State<BottomModal>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 20,
                           offset: const Offset(0, -5),
                         ),
@@ -134,8 +134,8 @@ class _BottomModalState extends State<BottomModal>
                             width: 40,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.onSurface.withOpacity(
-                                0.3,
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.3,
                               ),
                               borderRadius: BorderRadius.circular(2),
                             ),

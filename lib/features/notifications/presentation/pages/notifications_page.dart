@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import '../../../../core/widgets/gradient_card.dart';
 import '../../../../core/widgets/bottom_modal.dart';
 import '../cubit/notificaciones_cubit.dart';
@@ -76,13 +75,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
                               ? null
                               : const BorderSide(color: Colors.transparent),
                           backgroundColor: theme.colorScheme.surfaceContainer,
-                          selectedColor: theme.colorScheme.primary.withOpacity(
-                            0.2,
+                          selectedColor: theme.colorScheme.primary.withValues(
+                            alpha: 0.2,
                           ),
                           checkmarkColor: theme.colorScheme.primary,
                           labelStyle: TextStyle(
                             color: filtroActual == filter['filtro']
-                                ? theme.colorScheme.onBackground
+                                ? theme.colorScheme.onSurface
                                 : theme.colorScheme.onSurface,
                             fontSize: 12,
                           ),
@@ -208,7 +207,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   ?.copyWith(
                                     color: Theme.of(
                                       context,
-                                    ).colorScheme.onSurface.withOpacity(0.7),
+                                    ).colorScheme.onSurface.withValues(alpha: 0.7),
                                   ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -223,7 +222,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(
                           context,
-                        ).colorScheme.onSurface.withOpacity(0.5),
+                        ).colorScheme.onSurface.withValues(alpha: 0.5),
                       ),
                     ),
                   ],
@@ -256,7 +255,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           Text(
             'Las notificaciones aparecerán aquí',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ],

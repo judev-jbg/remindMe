@@ -90,7 +90,7 @@ class _EventsPageState extends State<EventsPage> {
             Text(
               'Crea tu primer evento tocando el botón +',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -222,7 +222,7 @@ class _EventsPageState extends State<EventsPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -253,14 +253,14 @@ class _EventsPageState extends State<EventsPage> {
               Icon(
                 Icons.calendar_today_outlined,
                 size: 16,
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
               ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
                   dateFormatter.format(evento.fecha),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
               ),
@@ -270,7 +270,7 @@ class _EventsPageState extends State<EventsPage> {
                       ? Icons.notifications_active_outlined
                       : Icons.notifications_off_outlined,
                   size: 18,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
             ],
           ),
@@ -282,13 +282,13 @@ class _EventsPageState extends State<EventsPage> {
                 Icon(
                   Icons.access_time_outlined,
                   size: 16,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
                 const SizedBox(width: 6),
                 Text(
                   DateFormat('HH:mm').format(evento.horaEvento!),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
               ],
@@ -302,13 +302,13 @@ class _EventsPageState extends State<EventsPage> {
                 Icon(
                   Icons.history_outlined,
                   size: 16,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
                 const SizedBox(width: 6),
                 Text(
                   _calcularTiempoTranscurrido(evento),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
               ],
@@ -494,7 +494,7 @@ class _EventsPageState extends State<EventsPage> {
               Text(
                 'Notas',
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 8),
@@ -502,7 +502,7 @@ class _EventsPageState extends State<EventsPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -520,7 +520,7 @@ class _EventsPageState extends State<EventsPage> {
               Text(
                 'Próximo recordatorio',
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 8),
@@ -528,10 +528,10 @@ class _EventsPageState extends State<EventsPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+                  color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: theme.colorScheme.primary.withOpacity(0.3),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Row(

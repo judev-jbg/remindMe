@@ -201,7 +201,7 @@ class _TimelinePageState extends State<TimelinePage>
                     color: isToday
                         ? theme.colorScheme.primary
                         : isPast
-                        ? theme.colorScheme.outline.withOpacity(0.3)
+                        ? theme.colorScheme.outline.withValues(alpha: 0.3)
                         : theme.colorScheme.outline,
                     shape: BoxShape.circle,
                   ),
@@ -215,7 +215,7 @@ class _TimelinePageState extends State<TimelinePage>
                       color: isToday
                           ? theme.colorScheme.primary
                           : isPast
-                          ? theme.colorScheme.onSurface.withOpacity(0.3)
+                          ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
                           : theme.colorScheme.onSurface,
                     ),
                   ),
@@ -227,7 +227,7 @@ class _TimelinePageState extends State<TimelinePage>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -247,8 +247,8 @@ class _TimelinePageState extends State<TimelinePage>
                 _formatDate(DateTime.now()),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: isPast
-                      ? theme.colorScheme.onSurface.withOpacity(0.3)
-                      : theme.colorScheme.onSurface.withOpacity(0.7),
+                      ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ),
@@ -303,7 +303,7 @@ class _TimelinePageState extends State<TimelinePage>
                     color: isToday
                         ? theme.colorScheme.primary
                         : isPast
-                        ? theme.colorScheme.outline.withOpacity(0.3)
+                        ? theme.colorScheme.outline.withValues(alpha: 0.3)
                         : theme.colorScheme.outline,
                     shape: BoxShape.circle,
                   ),
@@ -317,7 +317,7 @@ class _TimelinePageState extends State<TimelinePage>
                       color: isToday
                           ? theme.colorScheme.primary
                           : isPast
-                          ? theme.colorScheme.onSurface.withOpacity(0.3)
+                          ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
                           : theme.colorScheme.onSurface,
                     ),
                   ),
@@ -329,7 +329,7 @@ class _TimelinePageState extends State<TimelinePage>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -352,8 +352,8 @@ class _TimelinePageState extends State<TimelinePage>
                     _formatDate(fechaRelevante ?? evento.fecha),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: isPast
-                          ? theme.colorScheme.onSurface.withOpacity(0.3)
-                          : theme.colorScheme.onSurface.withOpacity(0.7),
+                          ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   if (evento.tipo != TipoEvento.otro) ...[
@@ -364,16 +364,16 @@ class _TimelinePageState extends State<TimelinePage>
                           _getIconForTipo(evento.tipo),
                           size: 16,
                           color: isPast
-                              ? theme.colorScheme.onSurface.withOpacity(0.2)
-                              : theme.colorScheme.onSurface.withOpacity(0.5),
+                              ? theme.colorScheme.onSurface.withValues(alpha: 0.2)
+                              : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                         const SizedBox(width: 4),
                         Text(
                           evento.tipo.displayName,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: isPast
-                                ? theme.colorScheme.onSurface.withOpacity(0.2)
-                                : theme.colorScheme.onSurface.withOpacity(0.5),
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.2)
+                                : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                           ),
                         ),
                       ],
@@ -434,7 +434,7 @@ class _TimelinePageState extends State<TimelinePage>
                     color: isToday
                         ? theme.colorScheme.primary
                         : isPast
-                        ? theme.colorScheme.outline.withOpacity(0.3)
+                        ? theme.colorScheme.outline.withValues(alpha: 0.3)
                         : theme.colorScheme.outline,
                     shape: BoxShape.circle,
                   ),
@@ -448,7 +448,7 @@ class _TimelinePageState extends State<TimelinePage>
                       color: isToday
                           ? theme.colorScheme.primary
                           : isPast
-                          ? theme.colorScheme.onSurface.withOpacity(0.3)
+                          ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
                           : theme.colorScheme.onSurface,
                     ),
                   ),
@@ -460,7 +460,7 @@ class _TimelinePageState extends State<TimelinePage>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -483,8 +483,8 @@ class _TimelinePageState extends State<TimelinePage>
                     _formatDate(fecha),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: isPast
-                          ? theme.colorScheme.onSurface.withOpacity(0.3)
-                          : theme.colorScheme.onSurface.withOpacity(0.7),
+                          ? theme.colorScheme.onSurface.withValues(alpha: 0.3)
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -499,11 +499,11 @@ class _TimelinePageState extends State<TimelinePage>
                                 Icons.circle,
                                 size: 6,
                                 color: isPast
-                                    ? theme.colorScheme.onSurface.withOpacity(
-                                        0.2,
+                                    ? theme.colorScheme.onSurface.withValues(
+                                        alpha: 0.2,
                                       )
-                                    : theme.colorScheme.onSurface.withOpacity(
-                                        0.5,
+                                    : theme.colorScheme.onSurface.withValues(
+                                        alpha: 0.5,
                                       ),
                               ),
                               const SizedBox(width: 8),
@@ -513,9 +513,9 @@ class _TimelinePageState extends State<TimelinePage>
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: isPast
                                         ? theme.colorScheme.onSurface
-                                              .withOpacity(0.2)
+                                              .withValues(alpha: 0.2)
                                         : theme.colorScheme.onSurface
-                                              .withOpacity(0.7),
+                                              .withValues(alpha: 0.7),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -530,7 +530,7 @@ class _TimelinePageState extends State<TimelinePage>
                       '+${eventos.length - 2} más',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isPast
-                            ? theme.colorScheme.primary.withOpacity(0.3)
+                            ? theme.colorScheme.primary.withValues(alpha: 0.3)
                             : theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
@@ -697,7 +697,7 @@ class _TimelinePageState extends State<TimelinePage>
               Text(
                 label,
                 style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 2),
@@ -760,7 +760,7 @@ class _TimelinePageState extends State<TimelinePage>
             Text(
               _formatDate(fecha),
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 24),

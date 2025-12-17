@@ -5,7 +5,6 @@ import 'dart:ui';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:uuid/uuid.dart';
 import '../../core/database/database_helper.dart';
-import '../../features/notifications/domain/entities/notificacion_log.dart';
 import 'notification_service.dart';
 
 /// Servicio para gestionar alarmas exactas con android_alarm_manager_plus
@@ -19,10 +18,8 @@ class AlarmService {
   static Future<bool> initialize() async {
     try {
       final result = await AndroidAlarmManager.initialize();
-      print('✅ AlarmService inicializado: $result');
       return result;
     } catch (e) {
-      print('❌ Error inicializando AlarmService: $e');
       return false;
     }
   }
@@ -41,16 +38,8 @@ class AlarmService {
 
       // Verificar que la fecha sea futura
       if (scheduledDate.isBefore(ahora)) {
-        print('❌ Cannot schedule alarm in the past: $scheduledDate');
         return false;
       }
-
-      print('⏰ AlarmService: Programando alarma exacta:');
-      print('   ID: $id');
-      print('   Título: $title');
-      print('   Fecha programada: $scheduledDate');
-      print('   Fecha actual: $ahora');
-      print('   Diferencia: ${scheduledDate.difference(ahora).inMinutes} minutos');
 
       // Programar la alarma exacta
       final success = await AndroidAlarmManager.oneShotAt(
@@ -68,15 +57,8 @@ class AlarmService {
         },
       );
 
-      if (success) {
-        print('✅ AlarmService: Alarma programada exitosamente');
-      } else {
-        print('❌ AlarmService: Error programando alarma');
-      }
-
       return success;
     } catch (e) {
-      print('❌ AlarmService: Error al programar alarma: $e');
       return false;
     }
   }
@@ -86,10 +68,8 @@ class AlarmService {
   static Future<bool> cancelAlarm(int id) async {
     try {
       await AndroidAlarmManager.cancel(id);
-      print('✅ AlarmService: Alarma $id cancelada');
       return true;
     } catch (e) {
-      print('❌ AlarmService: Error cancelando alarma $id: $e');
       return false;
     }
   }
@@ -98,9 +78,6 @@ class AlarmService {
   /// IMPORTANTE: Este método se ejecuta en un isolate separado
   @pragma('vm:entry-point')
   static Future<void> _alarmCallback(int id, Map<String, dynamic> params) async {
-    print('🔔 AlarmService: Alarma disparada - ID: $id');
-    print('   Params: $params');
-
     // Enviar mensaje al isolate principal
     final SendPort? send = IsolateNameServer.lookupPortByName(_portName);
     send?.send(params);
@@ -117,17 +94,13 @@ class AlarmService {
         payload: params['payload'] as String?,
       );
 
-      print('✅ AlarmService: Notificación mostrada');
-
       // 2. Registrar en la base de datos
       await _registrarNotificacionEnLog(
         params['title'] as String,
         params['body'] as String,
       );
-
-      print('✅ AlarmService: Notificación registrada en log');
     } catch (e) {
-      print('❌ AlarmService: Error en callback: $e');
+      // Error silencioso en producción
     }
   }
 
@@ -155,10 +128,8 @@ class AlarmService {
         DatabaseHelper.tableNotificacionesLog,
         notificacion,
       );
-
-      print('📝 Notificación registrada en base de datos');
     } catch (e) {
-      print('❌ Error registrando notificación en log: $e');
+      // Error silencioso en producción
     }
   }
 
@@ -169,7 +140,7 @@ class AlarmService {
     IsolateNameServer.registerPortWithName(port.sendPort, _portName);
 
     port.listen((dynamic data) {
-      print('📬 AlarmService: Mensaje recibido del callback: $data');
+      // Mensaje recibido del callback
     });
   }
 

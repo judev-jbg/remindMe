@@ -140,7 +140,7 @@ class _EventoFormState extends State<EventoForm> {
 
               // Tipo de evento
               DropdownButtonFormField<TipoEvento>(
-                value: _tipoSeleccionado,
+                initialValue: _tipoSeleccionado,
                 decoration: const InputDecoration(
                   labelText: 'Tipo de evento *',
                   border: OutlineInputBorder(),
@@ -262,7 +262,7 @@ class _EventoFormState extends State<EventoForm> {
               if (_tipoSeleccionado == TipoEvento.otro && _tieneRecordatorio) ...[
                 const SizedBox(height: 16),
                 DropdownButtonFormField<TiempoAvisoAntes>(
-                  value: _tiempoAvisoAntes,
+                  initialValue: _tiempoAvisoAntes,
                   decoration: const InputDecoration(
                     labelText: 'Tiempo de aviso *',
                     border: OutlineInputBorder(),
@@ -296,7 +296,7 @@ class _EventoFormState extends State<EventoForm> {
                   _tieneRecordatorio) ...[
                 const SizedBox(height: 16),
                 DropdownButtonFormField<EstadoEvento>(
-                  value: _estadoSeleccionado,
+                  initialValue: _estadoSeleccionado,
                   decoration: const InputDecoration(
                     labelText: 'Estado del recordatorio',
                     border: OutlineInputBorder(),
