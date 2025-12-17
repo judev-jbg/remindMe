@@ -9,6 +9,7 @@ Una aplicación de recordatorios elegante y minimalista para gestionar eventos i
 ## 📱 Características
 
 ### Gestión de Eventos
+
 - **Múltiples tipos de eventos**: Cumpleaños, Aniversarios, Mesarios y eventos personalizados
 - **Formulario inteligente**: Validación automática de fechas y horarios
 - **Tarjetas visuales elegantes**: Diseño con gradientes y visualización clara de información
@@ -16,12 +17,14 @@ Una aplicación de recordatorios elegante y minimalista para gestionar eventos i
 - **Cálculo automático**: Muestra años y meses transcurridos desde eventos importantes
 
 ### Timeline Inteligente
+
 - **Vista de 7 slots**: 3 eventos pasados, hoy y 3 futuros
 - **Navegación intuitiva**: Desplazamiento suave entre fechas
 - **Agrupación automática**: Organiza eventos por relevancia temporal
 - **Indicadores visuales**: Diferencia clara entre eventos pasados, actuales y futuros
 
 ### Sistema de Notificaciones
+
 - **Recordatorios confiables**: Utiliza `android_alarm_manager_plus` para alarmas exactas en Android
 - **Programación inteligente**: Ajusta recordatorios al tiempo del evento si la hora calculada está en el pasado
 - **Múltiples opciones de aviso**: 5, 15, 30 minutos, 1 hora, 1 día, 1 semana antes
@@ -29,6 +32,7 @@ Una aplicación de recordatorios elegante y minimalista para gestionar eventos i
 - **Notificaciones persistentes**: Funcionan incluso con la app cerrada
 
 ### Interfaz de Usuario
+
 - **Temas claro/oscuro**: Soporte completo de Material Design 3
 - **Animaciones fluidas**: Transiciones suaves y naturales
 - **Responsive**: Se adapta a diferentes tamaños de pantalla
@@ -36,6 +40,7 @@ Una aplicación de recordatorios elegante y minimalista para gestionar eventos i
 - **Bottom sheets informativos**: Detalles completos del evento al tocar las tarjetas
 
 ### Historial y Registro
+
 - **Log de notificaciones**: Auditoría completa de todas las acciones
 - **Marca como leído**: Gestión de notificaciones vistas
 - **Filtros**: Visualización organizada del historial
@@ -104,28 +109,34 @@ lib/
 ### Frameworks y Librerías Principales
 
 **Estado y Arquitectura**
+
 - `flutter_bloc: ^9.1.1` - Gestión de estado con BLoC/Cubit
 - `get_it: ^8.2.0` - Service locator para inyección de dependencias
 - `injectable: ^2.3.2` - Generación de código para DI
 
 **Almacenamiento**
+
 - `sqflite: ^2.3.0` - Base de datos SQLite local
 - `shared_preferences: ^2.2.2` - Almacenamiento clave-valor
 
 **Navegación**
+
 - `go_router: ^16.2.1` - Enrutamiento declarativo moderno
 
 **Notificaciones**
+
 - `flutter_local_notifications: ^19.4.2` - Notificaciones locales
 - `android_alarm_manager_plus: ^4.0.2` - Alarmas exactas confiables en Android
 - `timezone: ^0.10.1` - Soporte de zonas horarias
 
 **UI y Animaciones**
+
 - `flutter_animate: ^4.2.0` - Librería de animaciones
 - `lottie: ^3.3.2` - Animaciones Lottie
 - `flutter_staggered_animations: ^1.1.1` - Animaciones escalonadas
 
 **Utilidades**
+
 - `equatable: ^2.0.5` - Igualdad de valores para entidades
 - `intl: ^0.20.2` - Internacionalización y formateo
 - `dartz: ^0.10.1` - Programación funcional (Either)
@@ -145,28 +156,33 @@ lib/
 ### Pasos de Instalación
 
 1. **Clonar el repositorio**
+
 ```bash
-git clone https://github.com/tu-usuario/remindme.git
+git clone https://github.com/judev-jbg/remindme.git
 cd remindme
 ```
 
 2. **Instalar dependencias**
+
 ```bash
 flutter pub get
 ```
 
 3. **Generar código de inyección de dependencias**
+
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 4. **Configurar iconos y splash screen**
+
 ```bash
 flutter pub run flutter_launcher_icons
 flutter pub run flutter_native_splash:create
 ```
 
 5. **Ejecutar la aplicación**
+
 ```bash
 flutter run
 ```
@@ -178,6 +194,7 @@ flutter run
 ### Esquema SQLite (Versión 2)
 
 **Tabla: eventos**
+
 ```sql
 CREATE TABLE eventos (
   id TEXT PRIMARY KEY,
@@ -201,6 +218,7 @@ CREATE TABLE eventos (
 ```
 
 **Tabla: recordatorios_enviados**
+
 ```sql
 CREATE TABLE recordatorios_enviados (
   id TEXT PRIMARY KEY,
@@ -213,6 +231,7 @@ CREATE TABLE recordatorios_enviados (
 ```
 
 **Tabla: notificaciones_log**
+
 ```sql
 CREATE TABLE notificaciones_log (
   id TEXT PRIMARY KEY,
@@ -246,6 +265,7 @@ CREATE TABLE notificaciones_log (
 - **Cancelación automática**: Al editar/eliminar eventos, se cancelan notificaciones previas
 
 ### Anotaciones AOT
+
 ```dart
 @pragma('vm:entry-point')
 static void _alarmCallback(int id) async {
@@ -260,12 +280,14 @@ static void _alarmCallback(int id) async {
 ### Paleta de Colores
 
 **Tema Claro**
+
 - Primary: `#5956E8` (Purple)
 - Background: `#FFFFFF`
 - Surface: `#F5F5F5`
 - Error: `#D32F2F`
 
 **Tema Oscuro**
+
 - Primary: `#8B88FF` (Light Purple)
 - Background: `#121212`
 - Surface: `#1E1E1E`
@@ -274,6 +296,7 @@ static void _alarmCallback(int id) async {
 ### Gradientes para Tarjetas
 
 Las tarjetas de eventos utilizan gradientes dinámicos basados en el índice:
+
 - Gradient 1: Purple to Blue
 - Gradient 2: Pink to Orange
 - Gradient 3: Teal to Cyan
@@ -285,23 +308,27 @@ Las tarjetas de eventos utilizan gradientes dinámicos basados en el índice:
 ## 📝 Casos de Uso Principales
 
 ### Crear Evento
+
 ```dart
 final useCase = getIt<CrearEvento>();
 await useCase(evento);
 ```
 
 ### Programar Notificaciones
+
 ```dart
 final useCase = getIt<ProgramarNotificacionesEvento>();
 await useCase(evento);
 ```
 
 ### Obtener Timeline
+
 ```dart
 timelineCubit.cargarTimelineInicial();
 ```
 
 ### Cambiar Tema
+
 ```dart
 themeCubit.setThemeMode(ThemeMode.dark);
 ```
@@ -358,12 +385,15 @@ open coverage/html/index.html
 ## 🐛 Problemas Conocidos y Soluciones
 
 ### Android 14+ Notificaciones No Funcionan
+
 **Solución**: Se implementó `android_alarm_manager_plus` con anotaciones `@pragma('vm:entry-point')` para AOT compilation.
 
 ### Recordatorio en el Pasado
+
 **Solución**: Sistema ajusta automáticamente el recordatorio a la hora del evento si la opción seleccionada genera un tiempo pasado.
 
 ### Notificaciones No Aparecen en Historial
+
 **Solución**: Implementado registro en base de datos dentro del callback de alarma en isolate separado.
 
 ---
@@ -373,6 +403,7 @@ open coverage/html/index.html
 ### v1.0.0 (2025-12-17)
 
 **Añadido**
+
 - Sistema completo de gestión de eventos (CRUD)
 - Timeline de 7 slots con eventos pasados, actuales y futuros
 - Historial de notificaciones con marcado de leído
@@ -381,12 +412,14 @@ open coverage/html/index.html
 - Bottom sheet con detalles de eventos
 
 **Arreglado**
+
 - Programación de recordatorios cuando el tiempo calculado está en el pasado
 - Registro de notificaciones en base de datos desde callback de alarma
 - Validación de eventos tipo "Otro" con fechas pasadas
 - Anotaciones AOT para compilación Android
 
 **Mejorado**
+
 - Diseño de tarjetas de eventos con cálculo de tiempo transcurrido
 - Sistema de notificaciones con android_alarm_manager_plus
 - Experiencia de usuario en formulario de eventos
@@ -396,11 +429,13 @@ open coverage/html/index.html
 ## 👨‍💻 Desarrollo
 
 ### Ejecutar en modo debug
+
 ```bash
 flutter run
 ```
 
 ### Compilar para producción
+
 ```bash
 # Android
 flutter build apk --release
@@ -411,6 +446,7 @@ flutter build ipa --release
 ```
 
 ### Generar código
+
 ```bash
 # Inyección de dependencias
 flutter pub run build_runner build
@@ -420,6 +456,7 @@ flutter pub run build_runner watch
 ```
 
 ### Limpiar proyecto
+
 ```bash
 flutter clean
 flutter pub get
@@ -448,7 +485,7 @@ Las contribuciones son bienvenidas. Por favor:
 
 ## 📞 Contacto
 
-**Proyecto**: [RemindMe](https://github.com/tu-usuario/remindme)
+**Proyecto**: [RemindMe](https://github.com/judev-jbg/remindme)
 
 ---
 
